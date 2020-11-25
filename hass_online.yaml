@@ -1,0 +1,13 @@
+alias: HomeAssistant/Benachrichtigung wenn HomeAssistant wieder online ist.
+description: >-
+  Wenn HomeAssistant wieder gestartet ist werde ich benachrichtigt
+  
+trigger:
+- event: start
+  platform: homeassistant
+
+action:
+- service: notify.notify
+  data_template:
+    title: Home Assistant
+    message: Home Assistant ist wieder Online 
