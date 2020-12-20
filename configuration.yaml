@@ -46,16 +46,6 @@ recorder:
   db_url: !secret ha_rcorder_dburl
   
 history:
-
-#Influxdb-----------------------------------------------------
-#influxdb:
-#  host: a0d7b954-influxdb
-#  port: 8086
-#  database: homeassistant
-#  username: homeassistant
-#  password: 456DiclO789
-#  default_measurement: state
-#  max_retries: 3
   
 #Discovery----------------------------------------------------------------------
 discovery:
@@ -104,13 +94,13 @@ cloud:
 notify:
   - platform: nfandroidtv
     name: wohnzimmer_firetv
-    host: 192.168.178.17
+    host: xxx.xxx.xxx.xxx
 
 # Device Tracker-----------------------------------------------------------------
 #deaktiviert, weil nur Zugriff auf einzelnen AP, arbeite mit der Unifi Integration
 #device_tracker:
 #  - platform: unifi_direct
-#    host: 192.168.178.12
+#    host: xxx.xxx.xxx.xxx
 #    username: !secret unifi_username
 #    password: !secret unifi_password
 #    consider_home: 180
@@ -121,12 +111,12 @@ notify:
 remote:
   - platform: harmony
     name: EG-Wohnzimmer-HarmonyHub
-    host: 192.168.178.9
+    host: xxx.xxx.xxx.xxx
 
 #Xiaomi Luftbefeuchter----------------------------------------------------------
 fan:
   - platform: xiaomi_miio
-    host: 192.168.178.146
+    host: xxx.xxx.xxx.xxx
     token: !secret xiaomi_luftbefeuchter_token
     name: Luftbefeuchter
 
@@ -135,25 +125,25 @@ shelly:
   discovery: false
   discover_by_ip:
     #flur-licht-eg
-    - '10.0.30.6'
+    - 'xx.xx.xx.xx'
     #flur-licht-dg
-    - '10.0.30.7'
+    - 'xx.xx.xx.xx'
     #kueche-licht-speis
-    - '10.0.30.8'
+    - 'xx.xx.xx.xx'
     #über mqtt hinzugefügt
     #Probleme mit Schalter am Bett
     #schlafzimmer-licht
-    #- '10.0.30.9'
+    #- 'xx.xx.xx.xx'
     #flur-licht-windfang
-    - '10.0.30.18'
+    - 'xx.xx.xx.xx'
   devices:
-    - id: "F414CE"
+    - id: "F41X"
       light_switch: true
-    - id: "F41576"
+    - id: "F41X"
       light_switch: true
-    - id: "111606"
+    - id: "111X"
       light_switch: true
-    - id: "E09806963A09"
+    - id: "E098X"
       light_switch: true
 
 #Google Kalender----------------------------------------------------------------
@@ -220,13 +210,13 @@ monitor_docker:
 #      - samba
 #      - ssh
   - name: docker_raspi2
-    url: tcp://192.168.178.12:2375
+    url: tcp://xxx.xxx.xxx.xxx:2375
     
 media_player:
   # Use the Python ADB implementation
   - platform: androidtv
     name: wohnzimmer_firetv
-    host: 192.168.178.17
+    host: xxx.xxx.xxx.xxx
     device_class: firetv
     exclude_unnamed_apps: true
     apps:
