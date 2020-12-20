@@ -1,0 +1,236 @@
+homeassistant:
+  customize: !include customize.yaml
+  packages: !include_dir_named packages/
+# Configure a default setup of Home Assistant (frontend, api, etc)
+#default_config:
+
+#unkonfigurierte Einträge
+config:
+frontend:
+map:
+mobile_app:
+ssdp:
+sun:
+system_health:
+updater:
+zeroconf:
+#Includes-----------------------------------------------------------------------
+automation: !include automations.yaml
+automation mine: !include_dir_merge_list automation/
+alert: !include_dir_named alerts/
+script: !include scripts.yaml
+scene: !include scenes.yaml
+group: !include groups.yaml
+zone: !include_dir_list zones/
+mqtt: !include mqtt.yaml
+input_boolean: !include_dir_named input_boolean/
+sensor: !include_dir_list sensors/
+person: !include_dir_list persons/
+input_select: !include_dir_named input_select/
+
+#Python------------------------------------------------------------------------
+python_script:
+
+
+
+#Recorder und Logbuch-----------------------------------------------------------
+logbook:
+  include:
+    domains: 
+      - automation
+      - binary_sensor
+recorder:
+  #recorde nur die letzten 3 Tage
+  purge_keep_days: 14
+  #db url
+  db_url: !secret ha_rcorder_dburl
+  
+history:
+
+#Influxdb-----------------------------------------------------
+#influxdb:
+#  host: a0d7b954-influxdb
+#  port: 8086
+#  database: homeassistant
+#  username: homeassistant
+#  password: 456DiclO789
+#  default_measurement: state
+#  max_retries: 3
+  
+#Discovery----------------------------------------------------------------------
+discovery:
+  enable: 
+    - dlna_dmr
+
+# Text to speech----------------------------------------------------------------
+tts:
+  - platform: google_translate
+    language: 'de'
+
+#Cloud--------------------------------------------------------------------------
+cloud:
+#   #Alexa
+#   alexa:
+#     filter:
+#       include_entities:
+#         - group.haus
+#         - climate.bad_heizung
+#         - climate.buero_heizung
+#         - climate.schlafzimmer_heizung
+#         - fan.xiaomi_luftbefeuchter
+#         - switch.kueche_licht
+#         - light.wohnzimmer_licht
+#         - switch.fritzbox_guest_wifi
+#         - cover.garage_tor
+#         - automation.waschmaschine_fertig
+#         - climate.wohnesszimmer
+#         - scene.kino
+#         - scene.fernsehen
+#         - light.stehlampe
+#         - light.wohnzimmer_licht
+#         - sensor.waschmaschine_status
+#         - light.wohnzimmer_licht_tv
+#         - light.wohnzimmer_licht_weihnachtsbaum
+#     entity_config:
+#       group.haus:
+#         description: Haussteuerung
+#         display_categories: SWITCH
+#   google_actions:
+#     filter:
+#       include_entities:
+#         - cover.odgaragetor_barrier_state_label
+
+#Benachrichtigungsservice-------------------------------------------------------
+notify:
+  - platform: nfandroidtv
+    name: wohnzimmer_firetv
+    host: 192.168.178.17
+
+# Device Tracker-----------------------------------------------------------------
+#deaktiviert, weil nur Zugriff auf einzelnen AP, arbeite mit der Unifi Integration
+#device_tracker:
+#  - platform: unifi_direct
+#    host: 192.168.178.12
+#    username: !secret unifi_username
+#    password: !secret unifi_password
+#    consider_home: 180
+#    new_device_defaults:
+#      track_new_devices: false
+     
+# Harmony-----------------------------------------------------------------------
+remote:
+  - platform: harmony
+    name: EG-Wohnzimmer-HarmonyHub
+    host: 192.168.178.9
+
+#Xiaomi Luftbefeuchter----------------------------------------------------------
+fan:
+  - platform: xiaomi_miio
+    host: 192.168.178.146
+    token: !secret xiaomi_luftbefeuchter_token
+    name: Luftbefeuchter
+
+#Shelly Geräte------------------------------------------------------------------
+shelly:
+  discovery: false
+  discover_by_ip:
+    #flur-licht-eg
+    - '10.0.30.6'
+    #flur-licht-dg
+    - '10.0.30.7'
+    #kueche-licht-speis
+    - '10.0.30.8'
+    #über mqtt hinzugefügt
+    #Probleme mit Schalter am Bett
+    #schlafzimmer-licht
+    #- '10.0.30.9'
+    #flur-licht-windfang
+    - '10.0.30.18'
+  devices:
+    - id: "F414CE"
+      light_switch: true
+    - id: "F41576"
+      light_switch: true
+    - id: "111606"
+      light_switch: true
+    - id: "E09806963A09"
+      light_switch: true
+
+#Google Kalender----------------------------------------------------------------
+google:
+  client_id: !secret google_client_id
+  client_secret: !secret google_client_secret
+ 
+#Zigbee2mqtt Map----------------------------------------------------------------
+webhook:
+
+zigbee2mqtt_networkmap:
+   #topic: zigbee network map
+panel_iframe:
+  networkmap:
+    title: 'Zigbee Map'
+    url: '/local/community/zigbee2mqtt_networkmap/map.html'
+    icon: 'mdi:graphql'
+
+#Climategroup
+climate:
+  - platform: climate_group
+    name: 'Wohnesszimmer'
+    entities:
+    - climate.wohnzimmer_heizung_links
+    - climate.wohnzimmer_heizung_rechts
+    - climate.esszimmer_heizung_links
+    - climate.esszimmer_heizung_rechts
+    
+#Spotify------------------------------------------------------------------------
+spotify:
+  client_id: !secret spotify_client_id
+  client_secret: !secret spotify_client_secret
+  
+#Lichtgruppe--------------------------------------------------------------------
+light: 
+  - platform: group
+    name: wohnzimmer_licht_stehlampe
+    entities:
+      - light.wohnzimmer_licht_stehlampe_1
+      - light.wohnzimmer_licht_stehlampe_2
+
+#Timer--------------------------------------------------------------------------
+timer:
+  flur_eg:
+    duration: "00:02:00"
+  flur_dg:
+    duration: "00:02:00"
+  waschmaschine_fertig:
+    duration: "00:30:00"
+  trockner_fertig:
+    duration: "00:30:00"
+    
+#Dockermonitor------------------------------------------------
+monitor_docker:
+#  - name: hassio
+#    containers:
+#      - chrony
+#      - aircast
+#      - appdaemon
+#      - hassio-google-drive-backup#
+#      - mosquitto
+#      - zwave
+#      - hassio-zigbee2mqtt
+#      - samba
+#      - ssh
+  - name: docker_raspi2
+    url: tcp://192.168.178.12:2375
+    
+media_player:
+  # Use the Python ADB implementation
+  - platform: androidtv
+    name: wohnzimmer_firetv
+    host: 192.168.178.17
+    device_class: firetv
+    exclude_unnamed_apps: true
+    apps:
+      com.zdf.android.mediathek: "ZDF Mediathek"
+      de.prosiebensat1digital.prosieben: "Pro7 Mediathek"
+      mekmedia.dmax.firetv: "DMAX Mediathek"
+      tv.accedo.xdk.dtag.production: "MagentaTV"
