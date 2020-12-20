@@ -1,0 +1,44 @@
+  - alias: 'trockner_fertig_benachrichtigung'
+    trigger:
+    - platform: state
+      entity_id: input_select.trocknerstatus
+      to: Fertig
+    - platform: event
+      event_data: 
+        entity_id: timer.trockner_fertig
+      event_type: timer.finished
+    condition:
+    - condition: state
+      entity_id: input_select.trocknerstatus
+      state: Fertig
+    - condition: time
+      after: "07:00:00"
+      before: "23:00:00"
+    action:
+    - service: timer.start
+      entity_id: timer.trockner_fertig
+    - service: notify.alexa_media_esszimmer_alexa
+      data:
+        message: Der Trockner ist fertig
+        data:
+          type: announce
+    - service: notify.alexa_media_bad_alexa
+      data:
+        message: Der Trockner ist fertig
+        data:
+          type: announce
+    
+    - service: notify.mobile_app_christoph_handy
+      data: 
+        message: Der Trockner ist fertig
+        data:
+          persistent: true
+          tag: persistent
+      ## Fwohnzimmer_firetv ##
+    - service: notify.wohnzimmer_firetv
+      data:
+        title: HomeAssistant
+        message: Der Trockner ist fertig
+        data:
+          color: indigo
+          fontsize: large

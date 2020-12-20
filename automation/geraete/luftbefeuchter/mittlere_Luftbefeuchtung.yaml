@@ -1,0 +1,24 @@
+  - alias: EG/Wohnzimmer/mittlere Befeuchtung aktivieren
+    description: 'aktiviert die mittlere Befeuchtung wenn Luftfeuchtigkeit unter 50% sinkt oder über 47,5 steigt.'
+    trigger:
+    - below: 47.5
+      device_id: 39b08e0bcadd4f4788bcd173b040f6ab
+      domain: sensor
+      entity_id: sensor.egwohnzimmertemperatursensor_humidity
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+      platform: device
+      type: humidity
+    condition:
+    - condition: template
+      value_template: "{{ state_attr('weather.home', 'temperature')|int < 15 }}"
+    action:
+    - data:
+        entity_id: fan.wohnzimmer_luftbefeuchter
+      service: fan.turn_on
+    - data:
+        entity_id: fan.wohnzimmer_luftbefeuchter
+        speed: medium
+      service: fan.set_speed

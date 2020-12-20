@@ -1,0 +1,11 @@
+  - alias: start_preheat
+    description: ''
+    trigger:
+      - platform: zone
+        zone: zone.vorheizen
+        entity_id: person.christoph
+        event: enter
+    condition: []
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.absent_long

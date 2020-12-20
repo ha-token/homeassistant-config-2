@@ -1,0 +1,29 @@
+- alias: alexa_einschaltlautstaerke
+  description: >-
+    Setzt automatisch die Lautstärke aller Alexas auf ein bestimmtes Level.
+    So wird vermieden dass Alexa zu laut beginnt, wenn beim letzten mal lauter gehört wurde.
+    
+  trigger:
+    - platform: state
+      entity_id: 
+        - media_player.kueche_alexa
+        - media_player.esszimmer_alexa
+        - media_player.wohnzimmer_alexa
+        - media_player.bad_alexa
+      to: "paused"
+      for: "00:15:00" 
+    - platform: state
+      entity_id: 
+        - media_player.kueche_alexa
+        - media_player.esszimmer_alexa
+        - media_player.wohnzimmer_alexa
+        - media_player.bad_alexa
+      to: "standby"
+  
+  condition: []
+  
+  action:
+    - service: media_player.volume_set
+      data: 
+        entity_id: "{{ trigger.entity_id }}"
+        volume_level: 0.33

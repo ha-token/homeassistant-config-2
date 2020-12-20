@@ -1,0 +1,15 @@
+  - alias: 'garage_geschlossen'
+    description: ''
+    trigger:
+    - entity_id: cover.garage_tor
+      platform: state
+      to: 'closed'
+    action:
+    - delay: '00:00:30'
+    - entity_id: switch.garage_licht
+      service: switch.turn_off
+    - service: notify.mobile_app_christoph_handy
+      data:
+        message: clear_notification
+        data:
+         tag: garage_offen

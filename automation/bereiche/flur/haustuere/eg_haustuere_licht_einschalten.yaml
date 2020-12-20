@@ -1,0 +1,26 @@
+  - alias: eg_haustuere_licht_einschalten
+    description: 'Schaltet das Licht im Flur ein, wenn jemand nach Hause kommt.'
+    
+    trigger:
+    #Wenn Haustüre geöffnet wird
+    - platform: state
+      entity_id: binary_sensor.flur_haustuere_tuersensor_contact
+      to: "on"
+
+    condition:
+    - condition: template
+      value_template: "{{ state_attr('sun.sun', 'elevation') < 4.5 }}"    
+    #und nur wenn das Licht seit min 15 Sekunden aus ist
+    - condition: state
+      entity_id: light.flur_licht_eg
+      state: 'off'
+      for: 
+        seconds: 30
+    
+    action:
+    #Licht im Flur einschalten
+    - service: light.turn_on
+      entity_id: light.flur_licht_eg
+    #Licht im Windfang einschalten
+    - service: light.turn_on
+      entity_id: light.flur_licht_windfang

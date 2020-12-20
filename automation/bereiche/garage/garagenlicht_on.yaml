@@ -1,0 +1,9 @@
+  - alias: OD/Garage/Garagenlicht on
+    description: ''
+    trigger:
+    - entity_id: cover.garage_tor
+      platform: state
+      to: 'opening'
+    action:
+    - entity_id: switch.garage_licht
+      service: switch.turn_on

@@ -1,0 +1,31 @@
+  - alias: alexa_aus_wenn_TV_an
+    description: >-
+      Wenn der TV im Wohnzimmer eingeschaltet wird schalten die Alexas in EG ab.
+      So dass nicht beides unnötigerweise gleichzeitig läuft.
+      
+      Aber nur wenn im Wohnzimmer Spotify nicht läuft. So dass die Wiedergabe nicht
+      unterbrochen wird.
+      
+      
+    trigger:
+      - platform: state
+        entity_id: remote.eg_wohnzimmer_harmonyhub
+        to: "on"
+    
+    condition:
+      condition: not
+      conditions:
+        - condition: template
+          value_template: "{{ is_state_attr('media_player.wohnzimmer_firetv', 'source', 'Spotify') }}"
+    
+    action:
+      - service: media_player.turn_off
+        entity_id: media_player.wohnzimmer_alexa
+      - service: media_player.turn_off
+        entity_id: media_player.esszimmer_alexa
+      - service: media_player.turn_off
+        entity_id: media_player.kueche_alexa
+        
+        
+
+

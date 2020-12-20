@@ -1,0 +1,10 @@
+  - alias: eg_speisekammer_licht_einschalten
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.kueche_tuere_speis_kontakt
+      to: 'off'
+    condition:
+    action:
+    - entity_id: light.kueche_licht_speis
+      service: light.turn_off

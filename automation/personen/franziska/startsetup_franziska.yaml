@@ -1,0 +1,14 @@
+  - alias: Initialsetup für Hausstatus Franziska
+    description: ''
+    trigger:
+    - event: start
+      platform: homeassistant
+    condition:
+    - condition: state
+      entity_id: person.franziska
+      state: home
+    action:
+    - alias: ''
+      data: {}
+      entity_id: input_boolean.franziska_zuhause
+      service: input_boolean.turn_on

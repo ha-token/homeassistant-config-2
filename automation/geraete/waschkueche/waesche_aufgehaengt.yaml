@@ -1,0 +1,10 @@
+  - alias: ug/waschkueche/waesche_aufgehaengt
+    description: ''
+    trigger:
+    - platform: template
+      value_template: '{{ state_attr(''sensor.sensor_statistik_waschkuche_luftfeuchte'',
+        ''mean_change'')| int < 10 }} '
+    condition: []
+    action:
+    - entity_id: automation.wasche_ist_trocken
+      service: automation.turn_on

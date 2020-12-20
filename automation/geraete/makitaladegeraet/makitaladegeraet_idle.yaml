@@ -1,0 +1,11 @@
+  - alias: makitaladegeraet_idle
+    trigger:
+    - below: 2
+      entity_id: sensor.werkstatt_makitaladegeraet_energieverbrauch
+      for: 00:00:02
+      platform: numeric_state
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.makitaladegeraetstatus
+        option: Idle

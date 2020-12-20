@@ -1,0 +1,17 @@
+  - alias: aktiviere_anwesenheit
+    description: >-
+      Wenn das Haus aktiviert ist, wird der Alarm und die lange Abwesenheit wieder
+      deaktiviert.
+      
+    trigger:
+      entity_id: group.haus
+      platform: state
+      to: "on"
+    
+    condition: []
+    
+    action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.alarmsystem
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.absent_long

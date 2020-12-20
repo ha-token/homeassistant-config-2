@@ -1,0 +1,36 @@
+#
+# Ladegerät einschalten
+#
+
+- alias: handyladegeraet_einschalten
+  description: >-
+    Schaltet das Ladegerät ein, wenn der Ladestand unter 60% sinkt,
+    oder es Mittags um 12 Uhr ist.
+    
+  trigger:
+  - platform: time
+    at: "12:00:00"
+  - platform: numeric_state
+    entity_id: sensor.christoph_handy_batterie_ladestand
+    below: '60'
+  
+  action:
+  - entity_id: switch.schlafzimmer_ladegeraet_christoph
+    service: switch.turn_on
+    
+#
+# Ladegerät ausschalten
+#
+
+- alias: handyladegeraet_ausschalten
+  description: >-
+    Schaltet das Ladegerät aus, wenn das Handy auf 80% geladen ist.
+    
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.christoph_handy_batterie_ladestand
+    above: '80'
+    
+  action:
+  - entity_id: switch.schlafzimmer_ladegeraet_christoph
+    service: switch.turn_off

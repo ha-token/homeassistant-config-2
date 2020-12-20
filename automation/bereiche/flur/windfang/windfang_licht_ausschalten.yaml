@@ -1,0 +1,10 @@
+  - alias: windfang_licht_ausschalten
+    trigger:
+    #Aqara Sensor Windfang
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_windfang_bewegung
+      to: "off"
+    
+    action:
+    - service: light.turn_off
+      entity_id: light.flur_licht_windfang

@@ -1,0 +1,23 @@
+  - alias: aktiviere_lange_abwesenheit
+    description: >-
+      Wenn alle Personen länger als 2h Abwesend sind oder die Zone Vorheizen 
+      verlassen, wird ein input_boolean aktiviert.
+      
+    trigger:
+    - platform: state
+      entity_id: group.haus
+      to: 'off'
+      for: "02:00:00"
+    - entity_id: person.christoph
+      platform: zone
+      zone: zone.vorheizen
+      event: leave
+    
+    condition:
+    - condition: state
+      entity_id: group.haus
+      state: 'off'
+    
+    action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.absent_long

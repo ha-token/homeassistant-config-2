@@ -1,0 +1,17 @@
+  - alias: backup_fehlgeschlagen
+    description: >-
+      Wenn der Sensor für Backups erkennt dass ein backup nicht erstellt werden konnte
+      dann werde ich Benachrichtigt.
+      
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.snapshots_stale
+      to: 'true'
+    
+    condition: []
+    
+    action:
+    - service: notify.notify
+      data:
+        message: "Das Backup ist fehlgeschlagen. Bitte prüfen!"
+        title: "Backupprobleme"

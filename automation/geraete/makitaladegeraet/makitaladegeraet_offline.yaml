@@ -1,0 +1,12 @@
+  - alias: makitaladegeraet_offline
+    trigger:
+    - platform: state
+      entity_id: sensor.werkstatt_makitaladegeraet_energieverbrauch
+      to: 'unavailable'
+      for:
+        seconds: 5
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.makitaladegeraetstatus
+        option: nicht eingesteckt

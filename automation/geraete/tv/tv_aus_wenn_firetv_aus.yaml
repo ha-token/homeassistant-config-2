@@ -1,0 +1,37 @@
+  - alias: tv_aus_wenn_firetv_aus
+    description: 'wenn FireTV nichtmehr läuft und der TV auf keiner anderen Aktivität läuft'
+    
+    #wenn firetv status für 2 min auf off steht
+    trigger:
+      - platform: state
+        entity_id: media_player.wohnzimmer_firetv
+        to: 'paused'
+        for:  00:02:00
+      - platform: state
+        entity_id: media_player.wohnzimmer_firetv
+        to: 'idle'
+        for:  00:02:00
+        
+    #und nur wenn harmonyhub auf FireTV steht
+    condition:
+      condition: and
+      conditions:
+        - condition: template
+          value_template: >-
+            {% if not is_state_attr('media_player.wohnzimmer_firetv', 'source', 'MagentaTV') %}
+              True
+            {% else %}
+              False
+            {% endif %}
+        - condition: template
+          value_template: "{{ is_state_attr('remote.eg_wohnzimmer_harmonyhub', 'current_activity', 'FireTV') }}"
+    
+    #dann schalte alles an harmonyhub aus
+    action:
+      - service: remote.turn_off
+        entity_id: remote.eg_wohnzimmer_harmonyhub
+      - service: remote.send_command
+        data: 
+          entity_id: remote.eg_wohnzimmer_harmonyhub
+          device: FireTV
+          command: Sleep

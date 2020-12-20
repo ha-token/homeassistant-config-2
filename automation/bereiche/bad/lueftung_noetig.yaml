@@ -1,0 +1,30 @@
+  - alias: lueftung_noetig
+    description: >-
+      Wenn die Luftfeuchtigkeit im Bad zu hoch ist,
+      erfolgt eine Benachrichtigung dass gelüftet werden muss
+      
+    trigger: 
+    - platform: numeric_state
+      entity_id: sensor.bad_temperatursensor_luftfeuchtigkeit
+      above: 65
+      for: 00:05:00
+    
+    condition:
+    - condition: state
+      entity_id: binary_sensor.bad_fenster_links_contact
+      state: "off"
+    
+    action:
+    - service: notify.notify
+      data: 
+        message: "Die Luftfeuchtigkeit im Bad ist zu hoch. Bitte das Fenster öffnen"
+        title: "Luftfeuchtigkeit im Bad zu hoch"
+    - service: tts.google_translate_say
+      entity_id: media_player.badezimmer
+      data:
+        message: "Die Luftfeuchtigkeit im Bad ist zu hoch. Bitte das Fenster öffnen"
+    - service: notify.alexa_media_uberall
+      data:
+        message: "Die Luftfeuchtigkeit im Bad ist zu hoch. Bitte das Fenster öffnen"
+        data:
+          type: announce

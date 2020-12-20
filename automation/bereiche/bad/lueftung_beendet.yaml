@@ -1,0 +1,32 @@
+  - alias: lueftung_beendet
+    description: >-
+      Wenn die Luftfeuchtigkeit im Bad niedrig genug ist, 
+      erfolgt eine Benachrichtigung per Alexa dass das Fenster
+      wieder geschlossen werden kann.
+      
+    trigger: 
+    - platform: numeric_state
+      entity_id: sensor.bad_temperatursensor_luftfeuchtigkeit
+      below: 50
+      for: 00:05:00
+    
+    condition:
+    - condition: state
+      entity_id: binary_sensor.bad_fenster_links_contact
+      state: "on"
+    
+    action:
+    - service: notify.notify
+      data: 
+        message: "Die Luftfeuchtigkeit im Bad ist wieder normal. Du kannst das Fenster schließen"
+        title: "Fenster im Bad offen"
+    - service: notify.alexa_media_bad_alexa
+      data:
+        message: "Die Luftfeuchtigkeit im Bad ist wieder normal. Du kannst das Fenster schließen"
+        data:
+          type: announce
+    - service: notify.alexa_media_esszimmer_alexa
+      data:
+        message: "Die Luftfeuchtigkeit im Bad ist wieder normal. Du kannst das Fenster schließen"
+        data:
+          type: announce

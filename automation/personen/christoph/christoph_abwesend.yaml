@@ -1,0 +1,13 @@
+  - alias: Haus/Christoph abwesend
+    description: deaktiviere Input boolean für Christoph
+    trigger:
+    - entity_id: person.christoph
+      from: home
+      platform: state
+      to: not_home
+    condition: []
+    action:
+    - alias: ''
+      data: {}
+      entity_id: input_boolean.christoph_zuhause
+      service: input_boolean.turn_off

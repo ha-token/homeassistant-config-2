@@ -1,0 +1,18 @@
+  - alias: 'flur_haustuere_benachrichtigung'
+    
+    #Wenn flur_haustuere laenger als 5min geoeffnet ist
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_haustuere_tuersensor_contact
+      to: 'open'
+      for: 00:05:00
+    
+    #dauerhafte Benachrichtigung
+    action:
+    - service: notify.mobile_app_christoph_handy
+      data: 
+        message: Die Haustüre ist offen!
+        title: Achtung
+        data:
+          persistent: true
+          tag: haustuere_offen

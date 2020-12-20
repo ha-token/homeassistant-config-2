@@ -1,0 +1,18 @@
+  - alias: waschmaschine_fertig
+    trigger:
+    - below: 5
+      entity_id: sensor.waschkueche_waschmaschine_energieverbrauch
+      platform: numeric_state
+      for:
+        seconds: 30
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_select.waschmaschinenstatus
+          state: Läuft
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.waschmaschinenstatus
+        option: Fertig

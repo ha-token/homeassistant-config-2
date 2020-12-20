@@ -1,0 +1,32 @@
+  - alias: wohnzimmer_licht_verknuepfung_status
+    description: 'Wenn Hauptlicht im Wohnzimmer ein/ausgeschalten wird, werden auch die anderen Licht ein/ausgeschalten.'
+    
+    #wenn sich der Status von wohnzimmer_licht ändert ändert
+    trigger:
+    - platform: state
+      entity_id: light.wohnzimmer_licht
+    
+    #ohne weitere Bedingungen
+    condition:
+    
+    #dann ändere den Status der anderen Lampen auf denselben Wert
+    action:
+    #Fernsehlicht
+    - service_template: >
+        {% if is_state('light.wohnzimmer_licht', 'on') %}
+          light.turn_on
+        {% else %}  
+          light.turn_off
+        {% endif %}
+      entity_id: light.wohnzimmer_licht_tv
+    
+    #Stehlampe
+    - service_template: >
+        {% if is_state('light.wohnzimmer_licht', 'on') %}
+          light.turn_on
+        {% else %}  
+          light.turn_off
+        {% endif %}
+      entity_id: light.wohnzimmer_licht_stehlampe
+
+

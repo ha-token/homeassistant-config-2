@@ -1,0 +1,23 @@
+  - alias: trockner_leer
+    trigger:
+    - below: 1
+      entity_id: sensor.waschkueche_trockner_energieverbrauch
+      platform: numeric_state
+      for:
+        seconds: 30
+    condition:
+    - condition: state
+      entity_id: input_select.trocknerstatus
+      state: Fertig
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.trocknerstatus
+        option: Idle
+    - service: notify.mobile_app_christoph_handy
+      data:
+        message: clear_notification
+        data:
+         tag: persistent
+    
+    

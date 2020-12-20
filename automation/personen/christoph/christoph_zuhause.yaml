@@ -1,0 +1,12 @@
+  - id: '1577789989097'
+    alias: Haus/Christoph Zuhause
+    description: automatisierung für Input boolean für Christoph
+    trigger:
+    - entity_id: person.christoph
+      from: not_home
+      platform: state
+      to: home
+    condition: []
+    action:
+    - entity_id: input_boolean.christoph_zuhause
+      service: input_boolean.turn_on
