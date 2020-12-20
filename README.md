@@ -1,3 +1,5 @@
 # Se7enair's homeassistant-config
 
-Testreadme
+Hello,
+
+this is my HA config. Just want to share it with the world.
