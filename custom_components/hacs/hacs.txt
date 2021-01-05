@@ -1,1 +1,1 @@
-Thsi folder only exists to show that I use hacs.
+This folder only exists to show that I use hacs.
