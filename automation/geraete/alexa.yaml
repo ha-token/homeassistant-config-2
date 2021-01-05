@@ -9,7 +9,7 @@
     Deaktiviert die Sprachsteuerung aller Alexas wenn niemand Zuhause ist.
     So kann keiner bei offenem Fenster das Haus steuern.
   
-trigger:
+  trigger:
     - platform: state
       entity_id: group.haus
       to: 'off'
@@ -42,13 +42,13 @@ trigger:
         - switch.bad_alexa_nicht_stoeren
 
 #######################
-# Einschaltlautstärke #
+# EinschaltlautstÃ¤rke #
 #######################
 
 - alias: alexa_einschaltlautstaerke
   description: >-
-    Setzt automatisch die Lautstärke aller Alexas auf ein bestimmtes Level.
-    So wird vermieden dass Alexa zu laut beginnt, wenn beim letzten mal lauter gehört wurde.
+    Setzt automatisch die LautstÃ¤rke aller Alexas auf ein bestimmtes Level.
+    So wird vermieden dass Alexa zu laut beginnt, wenn beim letzten mal lauter gehÃ¶rt wurde.
     
   trigger:
     - platform: state
