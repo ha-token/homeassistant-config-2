@@ -2,7 +2,7 @@
 # Lüftung im Bad #
 ##################
 
-# Lüftung nötig #
+## Lüftung nötig ##
 
   - alias: lueftung_noetig
     description: >-
@@ -38,7 +38,7 @@
         data:
           type: announce
 
-# Lüftung beendet #
+## Lüftung beendet ##
 
   - alias: lueftung_beendet
     description: >-
