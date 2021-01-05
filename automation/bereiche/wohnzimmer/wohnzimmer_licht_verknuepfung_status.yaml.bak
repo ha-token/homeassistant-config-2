@@ -1,0 +1,49 @@
+  - alias: wohnzimmer_licht_verknuepfung_status
+    description: 'Wenn Hauptlicht im Wohnzimmer eingeschalten wird, werden auch die anderen Licht eingeschalten.'
+    
+    #wenn sich der Status von wohnzimmer_licht ändert ändert
+    trigger:
+    - platform: state
+      entity_id: light.wohnzimmer_licht
+      to: 'on'
+    
+    #ohne weitere Bedingungen
+    condition:
+    
+    #dann ändere den Status der anderen Lampen auf denselben Wert
+    action:
+    - service: light.turn_on
+      entity_id: 
+        - light.wohnzimmer_licht_stehlampe
+        - light.wohnzimmer_licht_tv
+    - service: light.turn_on
+      entity_id: 
+        - light.wohnzimmer_licht_tv
+        - light.wohnzimmer_licht_stehlampe
+      data_template:
+        brightness: "{{ state_attr('light.wohnzimmer_licht', 'brightness') }}"
+        
+  - alias: wohnzimmer_licht_verknuepfung_status
+    description: 'Wenn Hauptlicht im Wohnzimmer ausgeschalten wird, werden auch die anderen Licht ausgeschalten.'
+    
+    #wenn sich der Status von wohnzimmer_licht ändert ändert
+    trigger:
+    - platform: state
+      entity_id: light.wohnzimmer_licht
+      to: 'off'
+    
+    #ohne weitere Bedingungen
+    condition:
+    
+    #dann ändere den Status der anderen Lampen auf denselben Wert
+    action:
+    #Fernsehlicht
+    - service: light.turn_off
+      entity_id: 
+        - light.wohnzimmer_licht_stehlampe
+        - light.wohnzimmer_licht_tv
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.kinobeleuchtung
+        
+
+

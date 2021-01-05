@@ -1,8 +1,8 @@
-##################
+﻿##################
 # Lüftung im Bad #
 ##################
 
-## Lüftung nötig ##
+# Lüftung nötig #
 
   - alias: lueftung_noetig
     description: >-
@@ -38,7 +38,7 @@
         data:
           type: announce
 
-## Lüftung beendet ##
+# Lüftung beendet #
 
   - alias: lueftung_beendet
     description: >-
@@ -74,3 +74,5 @@
         message: "Die Luftfeuchtigkeit im Bad ist wieder normal. Du kannst das Fenster schließen"
         data:
           type: announce
+
+

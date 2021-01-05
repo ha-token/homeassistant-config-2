@@ -1,0 +1,37 @@
+######################################
+#                                    #
+#               Groups               #
+#                                    #
+######################################
+haus:
+  name: Haus
+  icon: mdi:home-assistant    
+  entities:
+    - input_boolean.christoph_zuhause
+    - input_boolean.franziska_zuhause
+
+waschkueche:
+  name: Waschküche
+  entities:
+    - automation.ug_waschkueche_waesche_trocknet
+    - input_boolean.trockner
+    - input_boolean.waschmaschine
+
+Ferien_und_Feiertage:
+  name: Ferien und Feiertage
+  icon: mdi:calendar-star
+  entities:
+    - calendar.ferien_bayern
+    - calendar.feiertage_baden_wurttemberg
+    - calendar.feiertage_bayern
+    - calendar.urlaub_christoph
+    
+wohnzimmer:
+  name: Wohnzimmer
+  entities:
+    - light.egwohnzimmerhauptlicht_light
+    - light.egwohnzimmerstehlampe_1
+    - light.egwohnzimmerstehlampe_2
+    - switch.egwohnzimmerfernsehlicht
+    - remote.eg_wohnzimmer_harmonyhub
+      

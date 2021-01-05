@@ -1,0 +1,163 @@
+###################
+# Kinomodus Start #
+###################
+  - alias: kinomodus_start
+    description: >-
+      Startet die Abfrage zum Kinomodus.
+    trigger:
+      platform: state
+      entity_id: input_boolean.kinomodus
+      to: 'on'
+
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kinomodus
+      - service: script.kinomodus
+        data_template:
+          text: 'Was möchtest du sehen?'
+          event_id: 'alexa_actionable_notification'
+          alexa_device: 'media_player.wohnzimmer_alexa'
+#
+# Anbieterauswahl 
+#
+
+  - alias: kinomodus_anbieterauswahl
+    description: >-
+      Schaltet den Kinomodus ein. 
+      Wählt die FireTV Quelle jenachdem was geantwortet wurde.
+    
+    trigger:
+      platform: event
+      event_type: alexa_actionable_notification
+      event_data:
+        event_id: 'alexa_actionable_notification'
+        event_response_type: 'ResponseSelect'
+        
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kinobeleuchtung
+      - service: remote.turn_on
+        entity_id: remote.eg_wohnzimmer_harmonyhub
+        data:
+          activity: "FireTV"
+      - service: media_player.turn_on
+        entity_id: media_player.wohnzimmer_firetv
+      - service: notify.alexa_media_wohnzimmer_alexa
+        data:
+          message: Das Kino ist gleich soweit. Ich wünsche dir viel Spaß, genieß den Film.
+          data:
+            type: tts
+      - delay: '00:00:05'
+      - service: media_player.select_source
+        entity_id: media_player.wohnzimmer_firetv
+        data_template:
+          source: "{{ trigger.event.data.event_response }}"
+
+###################
+# Kinobeleuchtung #
+###################
+#
+# Beleuchtung ein
+#
+  - alias: kinobeleuchtung_ein
+    description: >-
+      Automation für die Kinobeleuchtung
+    
+    trigger:
+      platform: state
+      entity_id: input_boolean.kinobeleuchtung
+      to: 'on'
+      
+    action:
+      - service: light.turn_on
+        entity_id:
+          - light.wohnzimmer_licht
+        data:
+          brightness_pct: 5
+      - service: light.turn_off
+        entity_id:
+          - light.wohnzimmer_licht_stehlampe
+          - light.wohnzimmer_licht_tv
+#     
+# Beleuchtung aus
+#
+  - alias: kinobeleuchtung_aus
+    description: >-
+      Schaltet die Kinobeleuchtung aus.
+      Entweder wenn der input_boolean oder die Wohnzimmerbeleuchtung 
+      ausgeschalten wird.
+  
+    trigger:
+      - platform: state
+        entity_id: input_boolean.kinobeleuchtung
+        to: 'off'
+      - platform: state
+        entity_id: remote.eg_wohnzimmer_harmonyhub
+        to: 'off'
+      - platform: template
+        value_template: "{{ is_state_attr('remote.eg_wohnzimmer_harmonyhub', 'activity_starting', 'Fernsehen') }}"
+    
+    condition:
+      condition: state
+      entity_id: input_boolean.kinobeleuchtung
+      state: 'on'
+      
+    action:
+      - service: input_boolean.turn_off
+        data:
+          entity_id: input_boolean.kinobeleuchtung
+      - service: light.turn_on
+        entity_id:
+          - light.wohnzimmer_licht
+          - light.wohnzimmer_licht_stehlampe
+          - light.wohnzimmer_licht_tv
+        data:
+          brightness_pct: 70
+#   
+# Beleuchtung Pause ein 
+#
+  - alias: kinobeleuchtung_pause_ein
+    description: >-
+      Erhöht die Helligkeit, wenn pausiert wird.
+    trigger:
+      - platform: state
+        entity_id: media_player.wohnzimmer_firetv
+        to: 'paused'
+      - platform: state
+        entity_id: media_player.wohnzimmer_tv
+        to: 'paused'
+    condition:
+      - condition: state
+        entity_id: input_boolean.kinobeleuchtung
+        state: 'on'
+    action:
+      - service: light.turn_on
+        entity_id: light.wohnzimmer_licht
+        data:
+          brightness_pct: 70
+#       
+# Beleuchtung Pause aus #
+#
+  - alias: kinobeleuchtung_pause_aus
+    description: >-
+      Geht zurück in die Kinobeleuchtung.
+    trigger:
+      - platform: state
+        entity_id: media_player.wohnzimmer_firetv
+        to: 'playing'
+      - platform: state
+        entity_id: media_player.wohnzimmer_tv
+        to: 'playing'
+    condition:
+      - condition: state
+        entity_id: input_boolean.kinobeleuchtung
+        state: 'on'
+    action:
+      - service: light.turn_on
+        entity_id: light.wohnzimmer_licht
+        data:
+          brightness_pct: 5
+ 
+
+      
+      
