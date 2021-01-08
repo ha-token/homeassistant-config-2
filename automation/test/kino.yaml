@@ -1,7 +1,7 @@
-###################
+﻿###################
 # Kinomodus Start #
 ###################
-  - alias: kinomodus_start
+  - alias: wohnzimmer_kinomodus_start
     description: >-
       Startet die Abfrage zum Kinomodus.
     trigger:
@@ -21,7 +21,7 @@
 # Anbieterauswahl 
 #
 
-  - alias: kinomodus_anbieterauswahl
+  - alias: wohnzimmer_kinomodus_anbieterauswahl
     description: >-
       Schaltet den Kinomodus ein. 
       Wählt die FireTV Quelle jenachdem was geantwortet wurde.
@@ -59,7 +59,7 @@
 #
 # Beleuchtung ein
 #
-  - alias: kinobeleuchtung_ein
+  - alias: wohnzimmer_kinobeleuchtung_ein
     description: >-
       Automation für die Kinobeleuchtung
     
@@ -78,10 +78,32 @@
         entity_id:
           - light.wohnzimmer_licht_stehlampe
           - light.wohnzimmer_licht_tv
+
+## input_boolean Kinobeleuchtung aus ##
+  - alias: wohnzimmer_input_boolean_kinobeleuchtung_aus
+    trigger:
+    - platform: state
+      entity_id: remote.eg_wohnzimmer_harmonyhub
+      to: 'off'
+    - platform: template
+      value_template: "{{ is_state_attr('remote.eg_wohnzimmer_harmonyhub', 'activity_starting', 'Fernsehen') }}"
+    - platform: state
+      entity_id: light.wohnzimmer_licht
+      to: 'off'
+    
+    condition:
+      condition: state
+      entity_id: input_boolean.kinobeleuchtung
+      state: 'on'
+      
+    action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.kinobeleuchtung
+
 #     
 # Beleuchtung aus
 #
-  - alias: kinobeleuchtung_aus
+  - alias: wohnzimmer_kinobeleuchtung_aus
     description: >-
       Schaltet die Kinobeleuchtung aus.
       Entweder wenn der input_boolean oder die Wohnzimmerbeleuchtung 
@@ -91,32 +113,25 @@
       - platform: state
         entity_id: input_boolean.kinobeleuchtung
         to: 'off'
-      - platform: state
-        entity_id: remote.eg_wohnzimmer_harmonyhub
-        to: 'off'
-      - platform: template
-        value_template: "{{ is_state_attr('remote.eg_wohnzimmer_harmonyhub', 'activity_starting', 'Fernsehen') }}"
-    
-    condition:
-      condition: state
-      entity_id: input_boolean.kinobeleuchtung
-      state: 'on'
       
     action:
       - service: input_boolean.turn_off
         data:
           entity_id: input_boolean.kinobeleuchtung
+    #   - service: light.turn_on
+    #     entity_id: light.wohnzimmer_licht
+    #   - delay: 00:00:02
       - service: light.turn_on
         entity_id:
           - light.wohnzimmer_licht
-          - light.wohnzimmer_licht_stehlampe
           - light.wohnzimmer_licht_tv
+          - light.wohnzimmer_licht_stehlampe
         data:
           brightness_pct: 70
 #   
 # Beleuchtung Pause ein 
 #
-  - alias: kinobeleuchtung_pause_ein
+  - alias: wohnzimmer_kinobeleuchtung_pause_ein
     description: >-
       Erhöht die Helligkeit, wenn pausiert wird.
     trigger:
@@ -138,7 +153,7 @@
 #       
 # Beleuchtung Pause aus #
 #
-  - alias: kinobeleuchtung_pause_aus
+  - alias: wohnzimmer_kinobeleuchtung_pause_aus
     description: >-
       Geht zurück in die Kinobeleuchtung.
     trigger:

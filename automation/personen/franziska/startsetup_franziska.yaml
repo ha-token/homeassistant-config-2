@@ -1,4 +1,4 @@
-  - alias: Initialsetup für Hausstatus Franziska
+﻿  - alias: franziska_initial
     description: ''
     trigger:
     - event: start

@@ -1,4 +1,9 @@
-  - alias: start_preheat
+###########
+# Heizung #
+###########
+
+ ## Vorheizen aktivieren ##
+  - alias: heizung_start_preheat
     description: ''
     trigger:
       - platform: zone

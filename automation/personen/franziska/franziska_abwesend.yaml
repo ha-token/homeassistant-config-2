@@ -1,4 +1,4 @@
-  - alias: Haus/Franziska abwesend
+﻿  - alias: franziska_abwesend
     description: deaktiviere Input boolean für Franziska
     trigger:
     - entity_id: person.franziska

@@ -1,4 +1,4 @@
-  - alias: "rauchalarm"
+  - alias: haus_rauchalarm
     trigger:
     - platform: state
       entity_id: 

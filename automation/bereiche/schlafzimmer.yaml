@@ -1,4 +1,9 @@
-  - alias: Benachrichtigung wenn Temperatur außen niedrig genug zum lüften
+################
+# Schlafzimmer #
+################
+
+ ## Lüften ##
+  - alias: schlafzimmer_lueften
     trigger:
       - platform: template
         value_template: "{{ (state_attr('weather.home', 'temperature') | float +2) < (state_attr('climate.dgschlafzimmerheizung_mode', 'current_temperature') | float ) }}"
@@ -13,3 +18,14 @@
        data: 
          message: "Du kannst jetzt das Schlafzimmer lüften. Es ist kühl genug draußen."
          title: "Schlafzimmer abkühlen"
+
+ ## Licht an/aus ##
+
+  - alias: schlafzimmer_licht
+    trigger:
+      platform: state
+      entity_id: sensor.schlafzimmer_schalter_bett_klick
+      to: "single"
+    action:
+      service: light.toggle
+      entity_id: light.schlafzimmer_licht

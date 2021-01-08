@@ -1,7 +1,8 @@
-#
-# Abends am Wochenende
-#
+#########################
+# Weihnachtsbeleuchtung #
+#########################
 
+## Ausschalten Wochenende ##
 - alias: weihnachtsbeleuchtung_ausschalten_wochenende
   description: >-
     Schaltet die Weihnachsbeleuchtung am Wochenende um 24Uhr aus.
@@ -9,13 +10,11 @@
   trigger:
   - platform: time
     at: "23:59:59"
-  
   condition:
     condition: time
     weekday:
       - fri
       - sat
-    
   action:
   - service: light.turn_off
     entity_id: light.garten_licht_weihnachten
@@ -28,10 +27,7 @@
         file:
           url: "https://d368g9lw5ileu7.cloudfront.net/races/races-35xxx/35908/raceBanner-3ntEeaK7-bxDbE7.jpg"
 
-#
-# Abends unter der Woche
-#
-
+## Ausschalten Wochentags ##
 - alias: weihnachtsbeleuchtung_ausschalten_wochentags
   description: >-
     Schaltet die Weihnachsbeleuchtung unter der Woche um 22:00Uhr aus. 
@@ -40,7 +36,6 @@
   trigger:
   - platform: time
     at: "22:00:00"
-
   condition:
     condition: time
     weekday:
@@ -49,7 +44,6 @@
       - tue
       - wed
       - thu
-    
   action:
   - service: light.turn_off
     entity_id: light.garten_licht_weihnachten
@@ -62,10 +56,7 @@
         file:
           url: "https://d368g9lw5ileu7.cloudfront.net/races/races-35xxx/35908/raceBanner-3ntEeaK7-bxDbE7.jpg"
 
-#
-# Morgens
-#
-
+## Ausschalten Morgens ##
 - alias: weihnachtsbeleuchtung_ausschalten_morgens
   description: >-
     Schaltet die Weihnachsbeleuchtung unter der Woche morgens wieder aus.
@@ -74,7 +65,6 @@
   trigger:
   - platform: sun
     event: sunrise
-
   condition:
     condition: time
     weekday:
@@ -83,8 +73,53 @@
       - wed
       - thu
       - fri
-    
   action:
   - service: light.turn_off
     entity_id: light.garten_licht_weihnachten
 
+## Einschalten Morgens ##
+- alias: weihnachtsbeleuchtung_einschalten_morgens
+  description: >-
+    Schaltet die Weihnachtsbeleuchtung 45 MInuten vor Sonnenaufgang ein.
+    Aber nur Wochentags.
+  
+  trigger:
+  - platform: time
+    at: "06:30:00"
+  condition:
+    condition: time
+    weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+  action:
+  - service: light.turn_on
+    entity_id: light.garten_licht_weihnachten
+
+## Einschalten Abends ##
+- alias: weihnachtsbeleuchtung_einschalten_abends
+  description: >-
+    Schaltet die Weihnachsbeleuchtung ein, wenn die Sonne untergeht.
+
+  trigger:
+  - platform: numeric_state
+    entity_id: sun.sun
+    value_template: "{{ state_attr('sun.sun', 'elevation') }}"
+    below: 3
+  condition:
+    condition: time
+    after: "15:00:00"
+    before: "21:00:00"
+  action:
+  - service: light.turn_on
+    entity_id: light.garten_licht_weihnachten
+  - service: notify.wohnzimmer_firetv
+    data:
+      title: "Weihnachtsbeleuchtung"
+      message: "Die Sonne geht unter. Die Weihnachtsbeleuchtung wird eingeschalten."
+      data:
+        timeout: 25
+        file:
+          url: "https://d368g9lw5ileu7.cloudfront.net/races/races-35xxx/35908/raceBanner-3ntEeaK7-bxDbE7.jpg"

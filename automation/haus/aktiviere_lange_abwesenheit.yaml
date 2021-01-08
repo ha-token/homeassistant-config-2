@@ -1,4 +1,4 @@
-  - alias: aktiviere_lange_abwesenheit
+﻿  - alias: haus_lange_abwesenheit
     description: >-
       Wenn alle Personen länger als 2h Abwesend sind oder die Zone Vorheizen 
       verlassen, wird ein input_boolean aktiviert.

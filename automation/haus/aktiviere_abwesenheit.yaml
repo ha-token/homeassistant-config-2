@@ -1,4 +1,4 @@
-  - alias: Haus/Abwesenheitsmodus aktivieren
+  - alias: haus_abwesenheit
     description: ''
     trigger:
       entity_id: group.haus

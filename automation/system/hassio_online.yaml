@@ -1,4 +1,4 @@
-  - alias: HomeAssistant/Benachrichtigung wenn HomeAssistant wieder online ist.
+  - alias: system_online
     description: >-
       Wenn HomeAssistant wieder gestartet ist werde ich benachrichtigt
       

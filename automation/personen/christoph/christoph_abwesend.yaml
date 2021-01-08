@@ -1,4 +1,4 @@
-  - alias: Haus/Christoph abwesend
+﻿  - alias: christoph_abwesend
     description: deaktiviere Input boolean für Christoph
     trigger:
     - entity_id: person.christoph

@@ -1,0 +1,43 @@
+﻿##############
+# Autobackup #
+##############
+
+ ## Benachrichtung Backupfehler ##
+  - alias: system_benachrichtigung_backupfehler
+    description: >-
+      Benachrichtigt wenn ein backup fehl schlägt.
+    trigger:
+      platform: event
+      event_type: auto_backup.snapshot_failed
+    action: 
+      service: persistent_notification.create
+      data_template: 
+        title: "Snapshot failed."
+        message: "Name: {{ trigger.event.data.name }}\nError: {{ trigger.event.data.error }}"
+    
+    
+ ## Benachrichtung erfolgreiches Backup ##
+  - alias: system_benachrichtigung_backup
+    description: >-
+      Benachrichtigt wenn ein backup erfolgreich war.
+    trigger:
+      platform: event
+      event_type: auto_backup.snapshot_successful
+    action: 
+      service: persistent_notification.create
+      data_template: 
+        title: "Snapshot successful."
+        message: "Name: {{ trigger.event.data.name }}"
+    
+ ## Backup durchführen ##
+  - alias: system_backup
+    description: >-
+      Erstellt ein Backup
+    trigger:
+      platform: time
+      at: "02:30:00"
+    action:
+      service: auto_backup.snapshot_full
+      data_template:
+        name: "Daily_Backup: {{ now().strftime('%A, %B %-d, %Y') }}"
+        keep_days: 7 

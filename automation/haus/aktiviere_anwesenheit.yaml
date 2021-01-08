@@ -1,4 +1,4 @@
-  - alias: aktiviere_anwesenheit
+  - alias: haus_anwesend
     description: >-
       Wenn das Haus aktiviert ist, wird der Alarm und die lange Abwesenheit wieder
       deaktiviert.

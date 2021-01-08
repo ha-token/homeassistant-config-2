@@ -1,9 +1,0 @@
-  - alias: dgschlafzimmer_licht_aus
-    trigger:
-      platform: state
-      entity_id: sensor.schlafzimmer_schalter_bett_klick
-      to: "single"
-    action:
-      service: light.toggle
-      #wahrscheinlich muss ich gegen shelly id tauschen
-      entity_id: light.schlafzimmer_licht

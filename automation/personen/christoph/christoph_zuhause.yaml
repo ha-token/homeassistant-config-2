@@ -1,5 +1,5 @@
-  - id: '1577789989097'
-    alias: Haus/Christoph Zuhause
+﻿  - id: '1577789989097'
+    alias: christoph_zuhause
     description: automatisierung für Input boolean für Christoph
     trigger:
     - entity_id: person.christoph

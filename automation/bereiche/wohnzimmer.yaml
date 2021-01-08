@@ -1,0 +1,98 @@
+##############
+# Wohnzimmer #
+##############
+
+ ## Licht ein ##
+  - alias: wohnzimmer_licht_ein
+    description: 'Wenn Hauptlicht im Wohnzimmer eingeschalten wird, werden auch die anderen Licht eingeschalten.'
+    trigger:
+    - platform: state
+      entity_id: light.wohnzimmer_licht
+      to: 'on'
+    condition:
+      condition: template
+      value_template: >
+        {{ trigger.from_state is not none and
+           trigger.from_state.state == 'off' and
+           trigger.to_state is not none and
+           trigger.to_state.state == 'on' }}
+    action:
+    - service: light.turn_on
+      entity_id: 
+        - light.wohnzimmer_licht_stehlampe
+        - light.wohnzimmer_licht_tv
+      data_template:
+        brightness: "{{ state_attr('light.wohnzimmer_licht', 'brightness') }}"
+
+ ## Licht aus ##
+  - alias: wohnzimmer_licht_aus
+    description: 'Wenn Hauptlicht im Wohnzimmer ausgeschalten wird, werden auch die anderen Licht ausgeschalten.'
+    trigger:
+    - platform: state
+      entity_id: light.wohnzimmer_licht
+      to: 'off'
+    action:
+    - service: light.turn_off
+      entity_id: 
+        - light.wohnzimmer_licht_stehlampe
+        - light.wohnzimmer_licht_tv
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.kinobeleuchtung
+
+ ## Helligkeit ##
+  - alias: wohnzimmer_licht_helligkeit
+    description: 'Verändere bei allen Lampen gleichzeitig die Helligkeit. Hauptlicht ist Master.'
+    trigger:
+    - platform: state
+      entity_id: light.wohnzimmer_licht
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.kinobeleuchtung
+          state: 'off'
+        - condition: template
+          value_template: >
+            {{ trigger.from_state is not none and
+               trigger.from_state.state == 'on' and
+               trigger.to_state is not none and
+               trigger.to_state.state == 'on' }}
+    action:
+    - service: light.turn_on
+      entity_id: light.wohnzimmer_licht_tv
+      data_template:
+        brightness: "{{ state_attr('light.wohnzimmer_licht', 'brightness') }}"
+    - service: light.turn_on
+      entity_id: light.wohnzimmer_licht_stehlampe
+      data_template:
+        brightness: "{{ state_attr('light.wohnzimmer_licht', 'brightness') }}"
+        
+ ## Ein wenn draußen dunkel ##
+  - alias: wohnzimmer_licht_wenn_draussen_dunkel
+    description: 'Schaltet das Licht im Wohnzimmer ein, wenn es draußen dunkel wird.'
+      
+    trigger:
+    - platform: numeric_state
+      entity_id: sun.sun
+      attribute: elevation
+      below: 4.5
+    - platform: state
+      entity_id: media_player.wohnzimmer_tv
+      to: 'on'
+    - platform: state
+      entity_id: remote.eg_wohnzimmer_harmonyhub
+      to: 'on'
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: media_player.wohnzimmer_tv
+          state: 'on'
+        - condition: state
+          entity_id: input_boolean.kinobeleuchtung
+          state: 'off'
+        - condition: template
+          value_template: "{{ state_attr('sun.sun', 'elevation') < 4.5 }}"
+    action:
+    - service: light.turn_on
+      entity_id: light.wohnzimmer_licht

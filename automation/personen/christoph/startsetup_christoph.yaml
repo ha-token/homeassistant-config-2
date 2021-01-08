@@ -1,4 +1,4 @@
-  - alias: Initialsetup für Hausstatus Christoph
+﻿  - alias: christoph_initial
     description: ''
     trigger:
     - event: start

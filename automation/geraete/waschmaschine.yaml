@@ -1,0 +1,111 @@
+################
+# Waschmachine #
+################
+
+ ## Waschmaschine fertig ## 
+  - alias: waschmaschine_fertig
+    trigger:
+    - below: 5
+      entity_id: sensor.waschkueche_waschmaschine_energieverbrauch
+      platform: numeric_state
+      for:
+        seconds: 30
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_select.waschmaschinenstatus
+          state: Läuft
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.waschmaschinenstatus
+        option: Fertig
+
+ ## Benachrichtigung ## 
+  - alias: 'waschmaschine_fertig_benachrichtigung'
+    trigger:
+    - platform: state
+      entity_id: input_select.waschmaschinenstatus
+      to: Fertig
+    - platform: event
+      event_data: 
+        entity_id: timer.waschmaschine_fertig
+      event_type: timer.finished
+    condition:
+    - condition: state
+      entity_id: input_select.waschmaschinenstatus
+      state: Fertig
+    - condition: time
+      after: "07:00:00"
+      before: "23:00:00"
+    action:
+    - service: timer.start
+      entity_id: timer.waschmaschine_fertig
+    - service: notify.alexa_media_esszimmer_alexa
+      data:
+        message: Die Waschmaschine ist fertig
+        data:
+          type: announce
+    - service: notify.alexa_media_bad_alexa
+      data:
+        message: Die Waschmaschine ist fertig
+        data:
+          type: announce
+    - service: notify.wohnzimmer_firetv
+      data:
+        title: HomeAssistant
+        message: Die Waschmaschine ist fertig
+        data:
+          color: indigo
+          fontsize: large
+    - service: notify.mobile_app_christoph_handy
+      data: 
+        message: Die Waschmaschine ist fertig
+        title: Waschmaschine
+        data:
+          persistent: true
+          tag: waschmaschine_fertig
+
+ ## Waschmaschine in Betrieb ## 
+  - alias: waschmaschine_laeuft
+    trigger:
+    - above: 5
+      entity_id: sensor.waschkueche_waschmaschine_energieverbrauch
+      platform: numeric_state
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.waschmaschinenstatus
+        option: Läuft
+    - service: notify.mobile_app_christoph_handy
+      data:
+        message: clear_notification
+        data:
+         tag: waschmaschine_fertig
+
+ ## Waschmaschine leer ## 
+  - alias: waschmaschine_leer
+    trigger:
+    - below: 1
+      entity_id: sensor.waschkueche_waschmaschine_energieverbrauch
+      platform: numeric_state
+      for:
+        seconds: 30
+    condition:
+    - condition: state
+      entity_id: input_select.waschmaschinenstatus
+      state: Fertig
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.waschmaschinenstatus
+        option: Idle
+    - service: notify.mobile_app_christoph_handy
+      data:
+        message: clear_notification
+        data:
+         tag: waschmaschine_fertig
+    
+    
+
