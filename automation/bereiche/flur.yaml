@@ -1,4 +1,32 @@
 ###########
+# Flur UG #
+###########
+
+ ## Einschalten ## -------------------------------------------------------------
+  - alias: flur_licht_ug_einschalten
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_ug_treppe
+      to: "on"
+    condition:
+      condition: template
+      value_template: "{{ state_attr('sun.sun', 'elevation') < 2.0 }}"
+    action:
+    - service: light.turn_on
+      entity_id: light.flur_licht_ug
+
+ ## Ausschalten ## -------------------------------------------------------------
+  - alias: flur_licht_ug_ausschalten
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_ug_treppe
+      to: "off"
+    action:
+    - service: light.turn_off
+      entity_id: light.flur_licht_ug
+      
+###########
 # Flur EG #
 ###########
 
@@ -25,9 +53,11 @@
  ## Ausschalten ## -------------------------------------------------------------
   - alias: flur_licht_eg_ausschalten
     trigger:
-    #Zigbee Hue Bewegungsmelder Spiegel EG  
     - platform: state
       entity_id: binary_sensor.flur_bewegungsmelder_eg_kamin_bewegung
+      to: "off"
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_spiegel_bewegung
       to: "off"
     
     action:
