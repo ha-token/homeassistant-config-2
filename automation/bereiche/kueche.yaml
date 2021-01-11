@@ -1,0 +1,9 @@
+ ## Licht an/aus ##
+  - alias: kueche_licht_spuele
+    trigger:
+      platform: state
+      entity_id: sensor.kueche_schalter_2_aktion
+      to: 'single'
+    action:
+      service: light.toggle
+      entity_id: light.kueche_licht_spuele_2
