@@ -1,0 +1,297 @@
+homeassistant:
+  customize: !include customize.yaml
+  packages: !include_dir_named packages
+  allowlist_external_dirs: [/config/]
+# Configure a default setup of Home Assistant (frontend, api, etc)
+#default_config:
+    
+    
+lovelace:
+  mode: storage
+  resources:
+    [ {url: /hacsfiles/bar-card/bar-card.js,                                  type: module},
+      {url: /hacsfiles/button-card/button-card.js,                            type: module},
+      {url: /hacsfiles/kiosk-mode/kiosk-mode.js,                              type: module},
+      {url: /hacsfiles/light-entity-card/light-entity-card.js,                type: module},
+      {url: /hacsfiles/light-popup-card/light-popup-card.js,                  type: module},
+      {url: /hacsfiles/lovelace-card-mod/card-mod.js,                         type: module},
+      {url: /hacsfiles/lovelace-hui-element/hui-element.js,                   type: module},
+      {url: /hacsfiles/lovelace-layout-card/layout-card.js,                   type: module},
+      {url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,       type: module},
+      {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,             type: module},
+      {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,         type: module},
+      {url: /hacsfiles/swipe-card/swipe-card.js,                              type: module},
+      {url: /hacsfiles/transmission-card/transmission-card.js,                type: module},
+
+      {url: '/local/calendar-card.js?v=31091',                                type: module},
+      # {url: '/local/stack-in-card.js?v=101',                                  type: module},
+      {url: '/local/valetudo-map-card.js?v=42dbceb',                          type: module},
+      {url: '/local/custom_icons.js?v=25052001',                              type: module},
+      {url: '/local/lovelace-webrtc-card/lovelace-webrtc-card.js?v=0.3',      type: module},
+
+      {url: /local/font.css,                                                  type: css} ]
+  dashboards:
+    lovelace-yaml:
+      mode: yaml
+      title: dashboard
+      icon: mdi:tablet-dashboard
+      show_in_sidebar: true
+      filename: ui-lovelace.yaml
+
+browser_mod:
+  prefix: "browser_"
+  devices:
+    b5f2b441-e26405b5:
+      name: dashboard_fullykiosk
+  disable:
+    - all
+    
+# lovelace_gen:
+
+#unkonfigurierte Einträge
+config:
+frontend:
+map:
+mobile_app:
+ssdp:
+sun:
+system_health:
+updater:
+zeroconf:
+media_extractor:
+# stream:
+#Includes-----------------------------------------------------------------------
+automation: !include automations.yaml
+automation mine: !include_dir_merge_list automation/
+alert: !include_dir_named alerts/
+script: !include scripts.yaml
+scene: !include scenes.yaml
+group: !include groups.yaml
+zone: !include_dir_list zones/
+mqtt: !include mqtt.yaml
+input_boolean: !include_dir_named input_boolean/
+sensor: !include_dir_list sensors/
+person: !include_dir_list persons/
+input_select: !include_dir_named input_select/
+
+#Python------------------------------------------------------------------------
+python_script:
+
+
+
+#Recorder und Logbuch-----------------------------------------------------------
+logbook:
+  include:
+    domains: 
+      - automation
+      - binary_sensor
+recorder:
+  #recorde nur die letzten 5 Tage
+  purge_keep_days: 28
+  #db url
+  # db_url: !secret ha_recorder_dburl
+  
+history:
+
+  
+#Discovery----------------------------------------------------------------------
+discovery:
+  enable: 
+    - dlna_dmr
+
+# Text to speech----------------------------------------------------------------
+tts:
+  - platform: google_translate
+    language: 'de'
+
+#Cloud--------------------------------------------------------------------------
+cloud:
+
+#Backup-------------------------------------------------------------------------
+auto_backup:
+  auto_purge: true
+
+#Benachrichtigungsservice-------------------------------------------------------
+notify:
+  - platform: nfandroidtv
+    name: wohnzimmer_firetv
+    host: 192.168.178.17
+
+#Xiaomi Luftbefeuchter----------------------------------------------------------
+fan:
+  - platform: xiaomi_miio
+    host: 192.168.178.146
+    token: !secret xiaomi_luftbefeuchter_token
+    name: Luftbefeuchter
+
+#Google Kalender----------------------------------------------------------------
+google:
+  client_id: !secret google_client_id
+  client_secret: !secret google_client_secret
+ 
+
+
+#Climategroup
+climate:
+  - platform: climate_group
+    name: 'Wohnesszimmer'
+    entities:
+    - climate.wohnzimmer_heizung_links
+    - climate.wohnzimmer_heizung_rechts
+    - climate.esszimmer_heizung_links
+    - climate.esszimmer_heizung_rechts
+    
+#Spotify------------------------------------------------------------------------
+spotify:
+  client_id: !secret spotify_client_id
+  client_secret: !secret spotify_client_secret
+  
+#Lichtgruppe--------------------------------------------------------------------
+light: 
+  - platform: group
+    name: wohnzimmer_licht_stehlampe
+    entities:
+      - light.wohnzimmer_licht_stehlampe_1
+      - light.wohnzimmer_licht_stehlampe_2
+  # kueche_licht_spuele als Zigbeegruppe
+  - platform: mqtt
+    schema: json
+    name: kueche_licht_spuele
+    command_topic: "zigbee2mqtt/kueche_licht_spuele/set"
+    state_topic: "zigbee2mqtt/kueche_licht_spuele"
+    color_temp: true
+    brightness: true
+ 
+  - platform: switch
+    name: kueche_licht
+    entity_id: switch.kueche_licht
+
+
+#Timer--------------------------------------------------------------------------
+timer:
+  flur_eg:
+    duration: "00:02:00"
+  flur_dg:
+    duration: "00:02:00"
+  waschmaschine_fertig:
+    duration: "00:30:00"
+  waschmaschine_laeuft:
+  trockner_fertig:
+    duration: "00:30:00"
+  trockner_laeuft:
+    
+#Dockermonitor------------------------------------------------
+monitor_docker:
+#  - name: hassio
+#    containers:
+#      - chrony
+#      - aircast
+#      - appdaemon
+#      - hassio-google-drive-backup#
+#      - mosquitto
+#      - zwave
+#      - hassio-zigbee2mqtt
+#      - samba
+#      - ssh
+  - name: docker_raspi2
+    url: tcp://192.168.178.12:2375
+
+#firetv und TV------------------------------------------------------------------------    
+media_player:
+  # Use the Python ADB implementation
+  - platform: androidtv
+    name: wohnzimmer_firetv
+    host: 192.168.178.17
+    device_class: firetv
+    # adb_server_ip: 127.0.0.1
+    exclude_unnamed_apps: true
+    apps:
+      com.zdf.android.mediathek: "ZDF"
+      de.prosiebensat1digital.prosieben: "Pro7"
+      mekmedia.dmax.firetv: "DMAX"
+      tv.accedo.xdk.dtag.production: "MagentaTV"
+      com.amazon.firebat: "Prime Video"
+      com.amazon.avod: "Amazon Prime"
+      com.amazon.firetv.youtube: "Youtube"
+      com.netflix.ninja: "Netflix"
+      com.amazon.tv.launcher: "Home"
+      com.spotify.tv.android: "Spotify"
+    state_detection_rules:
+      'com.amazon.tv.launcher':
+        - 'standby'
+      'mekmedia.dmax.firetv': #DMAX
+        - 'playing':
+            'media_session_state': 0  
+            'wake_lock_size': 2       
+        - 'playing':
+            'media_session_state': 0  
+            'wake_lock_size': 3       
+        - 'playing':
+            'media_session_state': 0  
+            'wake_lock_size': 4       
+        - 'playing':
+            'media_session_state': 0  
+            'wake_lock_size': 5       
+        - 'paused':
+            'media_session_state': 0  
+            'wake_lock_size': 1 
+      'tv.accedo.xdk.dtag.production': #MagentaTV
+        - 'playing':
+            'wake_lock_size': 2
+        - 'playing':
+            'wake_lock_size': 3 
+        - 'playing':
+            'wake_lock_size': 4
+        - 'playing':
+            'wake_lock_size': 5
+        - 'playing':
+            'wake_lock_size': 6
+        - 'playing':
+            'wake_lock_size': 7
+        - 'paused':
+            'wake_lock_size': 1
+        - 'standby':
+            'wake_lock_size': 0
+
+        
+ 
+samsungtv_smart:
+  - host: 192.168.178.18
+    app_list: '{"YouTube": "111299001912", "Netflix": "11101200001/org.tizen.netflix-app", "Prime Video": "3201512006785/org.tizen.primevideo", "MagentaTV": "g0nt8dscFO.MagentaTV", "RakutenTV": "vbUQClczfR.Wuakitv", "WaipuTV": "ndmbVBabXx.WaipuTV"}'
+
+
+#input_text--------------------------------------------------------------------
+input_text:
+  alexa_actionable_notification:
+    name: Alexa Actionable Notification Holder
+    max: 255
+    initial: '{"text": "This is a test of the alexa actions custom skill. Did it work?", "event": "actionable.skill.test"}'
+
+emulated_hue:
+  expose_by_default: true
+  entities:
+    light.wohnzimmer_licht_tv:
+      name: "wohnzimmer_tv"
+    light.wohnzimmer_licht:
+      name: "Wohnzimmerlicht"
+    input_boolean.kinobeleuchtung:
+      name: "Kinobeleuchtung"
+      
+# #Kamera-------------------------------------------------------------------------
+camera:
+  - platform: generic
+    name: garten_kamera_hof
+    still_image_url: !secret garten_kamera_hof_still
+    stream_source: !secret garten_kamera_hof_stream
+  - platform: proxy
+    entity_id: camera.garten_kamera_hof
+    max_stream_width: 360
+    max_image_width: 720
+binary_sensor:
+  - platform: rest
+    resource: !secret garten_kamera_hof_bewegung
+    name: garten_kamera_hof_bewegung
+    scan_interval: 1
+    value_template: "{{ value_json[0].value.state }}"
+    device_class: motion
+ 
