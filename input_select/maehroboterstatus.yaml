@@ -1,6 +1,0 @@
-name: Maehroboterstatus
-options:
-  - Idle
-  - Lädt
-  - Mähen
-initial: Idle

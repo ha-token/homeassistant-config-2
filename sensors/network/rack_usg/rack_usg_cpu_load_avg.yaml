@@ -1,6 +1,0 @@
-platform: min_max
-name: rack_usg_cpu_load_avg
-type: mean
-entity_ids:
-  - sensor.rack_usg_cpu_0_load
-  - sensor.rack_usg_cpu_1_load

@@ -1,6 +1,0 @@
-platform: statistics
-name: Sensor/Statistik/Waschküche/Luftfeuchte
-entity_id: sensor.ugwaschkchetemperatursensor_humidity
-max_age:
-  hours: 16
-precision: 2

@@ -1,7 +1,0 @@
-name: Waschmaschinenstatus
-options:
-  - Idle
-  - Läuft
-  - Finishing
-  - Fertig
-initial: Idle

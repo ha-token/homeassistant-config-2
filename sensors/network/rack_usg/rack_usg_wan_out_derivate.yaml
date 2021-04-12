@@ -1,5 +1,0 @@
-platform: derivative
-source: sensor.rack_usg_wan_out
-unit_time: s
-unit: B
-name: wan_out_usg_derivative

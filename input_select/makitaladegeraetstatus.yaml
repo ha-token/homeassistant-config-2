@@ -1,7 +1,0 @@
-name: makitaladegeraetstatus
-options:
-  - Idle
-  - Akku wird geladen
-  - Akku voll
-  - nicht eingesteckt
-initial: Idle

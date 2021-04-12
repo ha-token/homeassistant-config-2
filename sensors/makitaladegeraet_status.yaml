@@ -1,5 +1,0 @@
-platform: template
-sensors:
-  makitaladegeraet_status:
-    value_template: '{{ states.input_select.makitaladegeraetstatus.state}}'
-    friendly_name: 'Makita Ladegerät'
