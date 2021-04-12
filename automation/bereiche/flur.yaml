@@ -1,0 +1,203 @@
+###########
+# Flur UG #
+###########
+
+ ## Einschalten ## -------------------------------------------------------------
+  - alias: flur_licht_ug_einschalten
+    id: flur_licht_ug_einschalten
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_ug_treppe_bewegung
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_ug_bewegung
+      to: 'on'
+    condition:
+    #   condition: numeric_state
+    #   entity_id: sensor.flur_bewegungsmelder_ug_helligkeit
+    #   below: 20
+      condition: template
+      value_template: "{{ state_attr('sun.sun', 'elevation') < 5.0 }}"
+    action:
+    - service: light.turn_on
+      entity_id: light.flur_licht_ug
+
+ ## Ausschalten ## -------------------------------------------------------------
+  - alias: flur_licht_ug_ausschalten
+    id: flur_licht_ug_ausschalten
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_ug_bewegung
+      to: 'off'
+    action:
+    - service: light.turn_off
+      entity_id: light.flur_licht_ug
+      
+###########
+# Flur EG #
+###########
+
+ ## Einschalten ## -------------------------------------------------------------
+  - alias: flur_licht_eg_einschalten
+    id: flur_licht_eg_einschalten
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_kamin_bewegung
+      to: "on"
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_spiegel_bewegung
+      to: "on"      
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_treppe
+      to: "on"
+    condition:
+    #   condition: numeric_state
+    #   entity_id: sensor.flur_bewegungsmelder_eg_kamin_helligkeit
+    #   below: 20
+      condition: template
+      value_template: "{{ state_attr('sun.sun', 'elevation') < 4.5 }}"
+    action:
+    - service: light.turn_on
+      entity_id: light.flur_licht_eg
+
+ ## Ausschalten ## -------------------------------------------------------------
+  - alias: flur_licht_eg_ausschalten
+    id: flur_licht_eg_ausschalten
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_kamin_bewegung
+      to: "off"
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_spiegel_bewegung
+      to: "off"
+    
+    action:
+    - service: light.turn_off
+      entity_id: light.flur_licht_eg
+
+###########
+# Flur DG #
+###########
+
+ ## Ausschalten ## ------------------------------------------------------------
+  - alias: flur_licht_dg_ausschalten
+    id: flur_licht_dg_ausschalten
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_dg_decke_bewegung
+      to: 'off'
+    action:
+    - entity_id: light.flur_licht_dg
+      service: light.turn_off
+
+ ## Einschalten ## -------------------------------------------------------------
+  - alias: flur_licht_dg_einschalten
+    id: flur_licht_dg_einschalten
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_dg_decke_bewegung
+      to: 'on'
+      for: 
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_treppe
+      to: 'on'
+    condition:
+    #   condition: numeric_state
+    #   entity_id: sensor.flur_bewegungsmelder_dg_decke_helligkeit
+    #   below: 20
+      condition: template
+      value_template: "{{ state_attr('sun.sun', 'elevation') < 3 }}"
+    action:
+    - entity_id: light.flur_licht_dg
+      service: light.turn_on
+
+############
+# Haustüre #
+############
+
+ ## Benachrichtigung ## --------------------------------------------------------
+  - alias: flur_haustuere_benachrichtigung
+    id: flur_haustuere_benachrichtigung
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_haustuere_tuersensor_contact
+      to: 'open'
+      for: 00:05:00
+    action:
+    - service: notify.mobile_app_christoph_handy
+      data: 
+        message: Die Haustüre ist offen!
+        title: Achtung
+        data:
+          persistent: true
+          tag: haustuere_offen
+
+ ## Haustüre geschlossen ## ----------------------------------------------------
+  - alias: flur_haustuere_geschlossen
+    id: flur_haustuere_geschlossen
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_haustuere_tuersensor_contact
+      to: 'close'
+    action:
+    - service: notify.mobile_app_christoph_handy
+      data:
+        message: clear_notification
+        data:
+         tag: haustuere_offen
+
+ ## Licht einschalten ## -------------------------------------------------------
+  - alias: haustuere_licht_einschalten
+    id: haustuere_licht_einschalten
+    description: 'Schaltet das Licht im Flur ein, wenn jemand nach Hause kommt.'
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_haustuere_tuersensor_contact
+      to: "on"
+    condition:
+    - condition: template
+      value_template: "{{ state_attr('sun.sun', 'elevation') < 4.5 }}"    
+    - condition: state
+      entity_id: light.flur_licht_eg
+      state: 'off'
+      for: 
+        seconds: 30
+    action:
+    - service: light.turn_on
+      entity_id: light.flur_licht_eg
+    - service: light.turn_on
+      entity_id: light.flur_licht_windfang
+
+############
+# Windfang #
+############
+
+ ## Licht ausschalten ## -------------------------------------------------------
+  - alias: windfang_licht_ausschalten
+    id: windfang_licht_ausschalten
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_windfang_bewegung
+      to: "off"
+    action:
+    - service: light.turn_off
+      entity_id: light.flur_licht_windfang
+
+ ## Licht einschalten ## -------------------------------------------------------
+  - alias: windfang_licht_einschalten
+    id: windfang_licht_einschalten
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_windfang_bewegung
+      to: "on"
+    condition:
+      condition: numeric_state
+      entity_id: sensor.flur_bewegungsmelder_eg_windfang_helligkeit
+      below: 20
+    action:
+    - service: light.turn_on
+      entity_id: light.flur_licht_windfang

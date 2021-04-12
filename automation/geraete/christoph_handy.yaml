@@ -1,0 +1,101 @@
+﻿#############
+# Ladegerät #
+#############
+
+## Ladegerät einschalten ## ----------------------------------------------------
+
+- alias: christoph_handyladegeraet_einschalten
+  id: christoph_handyladegeraet_einschalten
+  description: >-
+    Schaltet das Ladegerät ein, wenn der Ladestand unter 60% sinkt,
+    oder es Mittags um 12 Uhr ist.
+    
+  trigger:
+  - platform: time
+    at: "12:00:00"
+  - platform: numeric_state
+    entity_id: sensor.christoph_handy_batterie_ladestand
+    below: '60'
+  
+  action:
+  - entity_id: switch.schlafzimmer_ladegeraet_christoph
+    service: switch.turn_on
+    
+    
+## Ladegerät ausschalten ## ----------------------------------------------------
+
+- alias: christoph_handyladegeraet_ausschalten
+  id: christoph_handyladegeraet_ausschalten
+  description: >-
+    Schaltet das Ladegerät aus, wenn das Handy auf 80% geladen ist.
+    
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.christoph_handy_batterie_ladestand
+    above: '80'
+    
+  action:
+  - entity_id: switch.schlafzimmer_ladegeraet_christoph
+    service: switch.turn_off
+    
+## Benachrichtigen wenn Handy voll ## ------------------------------------------
+
+- alias: christoph_benachrichtigung_handy_voll
+  id: christoph_benachrichtigung_handy_voll
+  description: >-
+    Benachrichtigt wenn das Handy auf 80% aufgeladen ist. So dass es nicht überladen wird.
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.christoph_handy_batterie_ladestand
+    above: '80'
+  condition:
+    condition: state
+    entity_id: sensor.christoph_handy_batterie_status
+    state: 'charging'
+  action:
+  - service: notify.notify
+    data:
+      message: "Bitte stecke das Ladegerät ab"
+      title: "Handy zu 80% aufgeladen"
+
+
+## Benachrichtigen wenn Handy geladen werden muss ## ---------------------------
+
+- alias: christoph_benachrichtigung_handy_leer
+  id: christoph_benachrichtigung_handy_leer
+  description: >-
+    Benachrichtigt wenn das Handy zu weniger als 30% aufgeladen ist. So dass es nicht tiefentladen wird.
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.christoph_handy_batterie_ladestand
+    below: '30'
+  condition:
+    condition: state
+    entity_id: sensor.christoph_handy_batterie_status
+    state: 'discharging'
+  action:
+  - service: notify.notify
+    data:
+      message: "Bitte schließe das Handy ans Ladegerät an"
+      title: "Handy entladen."
+
+
+##########    
+# Wecker #
+##########
+    
+## Licht an wenn Wecker ## -----------------------------------------------------
+
+- alias: christoph_schlafzimmerlicht_an_wecker
+  id: christoph_schlafzimmerlicht_an_wecker
+  description: >-
+    Schaltet das Schlafzimmerlicht an, wenn der Wecker von Christoph klingelt.
+    
+  trigger:
+  - platform: state
+    entity_id: sensor.christoph_handy_wecker_klingelt
+    to: 'true'
+    
+  action:
+  - service: light.turn_on
+    entity_id: light.schlafzimmer_licht

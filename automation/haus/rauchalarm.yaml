@@ -1,0 +1,19 @@
+  - alias: haus_rauchalarm
+    id: haus_rauchalarm
+    trigger:
+    - platform: state
+      entity_id: 
+        - binary_sensor.dgflurrauchmelder_sensor
+        - binary_sensor.dgschlafzimmerrauchmelder_sensor_2
+        - binary_sensor.egflurrauchmelder_sensor
+      to: 'on'
+    condition: []
+    action:
+    - service: notify.alexa_media_uberall
+      data:
+        type: announce
+        message: "Alarm, ein Rauchmelder hat angeschlagen!"
+    - service: notify.notify
+      data:
+        title: "ALARM"
+        message: "Ein Rauchmelder meldet Rauch!"

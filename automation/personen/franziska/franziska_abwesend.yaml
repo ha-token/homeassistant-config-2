@@ -1,0 +1,12 @@
+﻿  - alias: franziska_abwesend
+    id: franziska_abwesend
+    description: deaktiviere Input boolean für Franziska
+    trigger:
+    - entity_id: person.franziska
+      from: home
+      platform: state
+      to: not_home
+    condition: []
+    action:
+    - entity_id: input_boolean.franziska_zuhause
+      service: input_boolean.turn_off

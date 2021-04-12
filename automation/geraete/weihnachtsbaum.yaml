@@ -1,0 +1,31 @@
+##################
+# Weihnachtsbaum #
+##################
+
+ ## Einschalten ##
+  - alias: weihnachtsbaum_einschalten
+    id: weihnachtsbaum_einschalten
+    description: >-
+      Schaltet den Weihnachtsbaum ein, wenn das Wohnzimmerlicht eingeschalten wird.
+  
+    trigger:
+    - platform: state
+      entity_id: light.wohnzimmer_licht
+      to: 'on'
+    action:
+    - entity_id: light.wohnzimmer_licht_weihnachtsbaum
+      service: light.turn_on
+
+ ## Ausschalten ##
+  - alias: weihnachtsbaum_ausschalten
+    id: weihnachtsbaum_ausschalten
+    description: >-
+      Schaltet den Weihnachtsbaum aus, wenn das Wohnzimmerlicht ausgeschalten wird.
+    
+    trigger:
+    - platform: state
+      entity_id: light.wohnzimmer_licht
+      to: 'off'
+    action:
+    - entity_id: light.wohnzimmer_licht_weihnachtsbaum
+      service: light.turn_off

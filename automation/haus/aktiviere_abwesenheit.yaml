@@ -1,0 +1,14 @@
+  - alias: haus_abwesenheit
+    id: haus_abwesenheit
+    description: ''
+    trigger:
+      entity_id: group.haus
+      platform: state
+      to: "off"
+      for: 00:05:00
+    condition: []
+    action:
+    - entity_id: switch.fritzbox_guest_wifi
+      service: switch.turn_off
+    - entity_id: input_boolean.alarmsystem
+      service: input_boolean.turn_on

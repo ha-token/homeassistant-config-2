@@ -1,0 +1,11 @@
+  - alias: Zigbee Publish MQTT Birth Message
+    id: Zigbee Publish MQTT Birth Message
+    trigger:
+      platform: homeassistant
+      event: start
+    action:
+      - delay: '90'
+      - service: mqtt.publish
+        data:
+          topic: 'hass/status'
+          payload: 'online'

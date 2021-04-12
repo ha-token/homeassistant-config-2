@@ -1,0 +1,26 @@
+ ## Spuelenlicht an/aus ##
+  - alias: kueche_licht_spuele_toggle
+    id: kueche_licht_spuele_toggle
+    trigger:
+      platform: device
+      domain: mqtt
+      device_id: 436a2edcbcab79f62cc26acde8dfa195
+      type: click
+      subtype: single
+      discovery_id: 0x00158d00045a1393 click_single
+    action:
+    - service: light.toggle
+      entity_id: light.kueche_licht_spuele
+
+ ## Spuelenlicht aus ##
+  - alias: kueche_licht_spuele_aus
+    id: kueche_licht_spuele_aus
+    trigger:
+      platform: state
+      entity_id: switch.kueche_licht
+      to: 'off'
+    action:
+    - service: light.turn_off
+      entity_id: light.kueche_licht_spuele
+      
+      

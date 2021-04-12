@@ -1,0 +1,71 @@
+##########
+# Garage #
+##########
+
+ ## Benachrichtigung ## --------------------------------------------------------
+  - alias: garage_benachrichtigung
+    id: garage_benachrichtigung
+    trigger:
+    - platform: state
+      entity_id: cover.garage_tor
+      to: 'open'
+      for: 00:05:00
+    action:
+    - service: notify.mobile_app_christoph_handy
+      data: 
+        message: Die Garage ist offen!
+        title: Achtung
+        data:
+          persistent: true
+          tag: garage_offen
+          actions:
+            - title: "Garage schließen" # The button title
+              action: "garage_close" # The key you are sending for the event
+
+ ## Garage geschlossen ## ------------------------------------------------------
+  - alias: 'garage_geschlossen'
+    id: garage_geschlossen
+    description: ''
+    trigger:
+    - entity_id: cover.garage_tor
+      platform: state
+      to: 'closed'
+    action:
+    - delay: '00:00:30'
+    - entity_id: switch.garage_licht
+      service: switch.turn_off
+    - service: notify.mobile_app_christoph_handy
+      data:
+        message: clear_notification
+        data:
+         tag: garage_offen
+
+ ## Garage schließen über Benachrichtigung ## ----------------------------------
+  - alias: garage_schliessen
+    id: garage_schliessen
+    trigger:
+    - platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: 'garage_close'
+    
+    action:
+    - service: cover.close_cover
+      entity_id: cover.garage_tor
+    - service: notify.mobile_app_christoph_handy
+      data:
+        message: clear_notification
+        data:
+         tag: garage_offen
+
+ ## Garage öffnen ## -----------------------------------------------------------
+  - alias: garage_oeffnen
+    id: garage_oeffnen
+    description: ''
+    trigger:
+    - entity_id: cover.garage_tor
+      platform: state
+      to: 'opening'
+    action:
+    - entity_id: switch.garage_licht
+      service: switch.turn_on

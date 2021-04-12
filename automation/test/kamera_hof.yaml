@@ -1,0 +1,85 @@
+##########
+# Kamera #
+##########
+
+
+                
+    ##################################
+    # Benachrichtigung für Christoph #
+    ##################################
+  - alias: kamera_hof_benachrichtigung
+    id: kamera_hof_benachrichtigung
+    description: >-
+      Gibt eine Benachrichtigung auf Christophs Handy aus
+    trigger:
+      platform: state
+      entity_id: binary_sensor.garten_kamera_hof_bewegung
+      to: 'on'
+      
+    condition:
+      - condition: state
+        entity_id: input_boolean.christoph_zuhause
+        state: "off"
+        
+    action:
+      - delay: 00:00:01
+      
+      - service: camera.snapshot
+        entity_id: camera.garten_kamera_hof
+        data:
+          filename: "/config/www/tmp/snapshot_hof_latest.jpg"
+          
+      - service: notify.mobile_app_christoph_handy
+        data:
+          message: 'Es wurde Bewegung im Hof registriert um {{now().strftime("%H:%M %d-%m-%y")}} '
+          data:
+            ttl: 0
+            priority: high
+            clickAction: "/lovelace/garten-kamera-hof"
+            channel: alarm_stream
+            image: "https://l0s78v5e5n18jvi2khsnff0axlg80pnf.ui.nabu.casa/local/tmp/snapshot_hof_latest.jpg"
+
+                
+      - service: notify.mobile_app_suedpack_iphone
+        data_template:
+          message: 'Es wurde Bewegung im Hof registriert um {{now().strftime("%H:%M %d-%m-%y")}} '
+          data:
+            attachment:
+              content-type: jpeg
+            push:
+              badge: 0
+              sound: 
+                name: bewegung_hof
+                critical: 1
+                volume: 1.0
+              category: camera 
+            entity_id: camera.garten_kamera_hof 
+            
+    #############################
+    # Archivbilder bei Bewegung #
+    #############################
+  - alias: kamera_hof_archiv
+    id: kamera_hof_archiv
+    description: >-
+      Speichert Bilder der Kamera immer wenn Bewegung registriert wird
+    trigger:
+      platform: state
+      entity_id: binary_sensor.garten_kamera_hof_bewegung
+      to: 'on'
+    action:
+      - service: camera.snapshot
+        entity_id: camera.garten_kamera_hof
+        data:
+          filename: '/config/www/tmp/archiv/snapshot_hof_{{ now().strftime("%Y%m%d-%H%M%S") }}_1.jpg'
+      - delay: 00:00:01
+      - service: camera.snapshot
+        entity_id: camera.garten_kamera_hof
+        data:
+          filename: '/config/www/tmp/archiv/snapshot_hof_{{ now().strftime("%Y%m%d-%H%M%S") }}_2.jpg'
+      - delay: 00:00:01
+      - service: camera.snapshot
+        entity_id: camera.garten_kamera_hof
+        data:
+          filename: '/config/www/tmp/archiv/snapshot_hof_{{ now().strftime("%Y%m%d-%H%M%S") }}_3.jpg'
+
+

@@ -1,0 +1,77 @@
+##################
+# Luftbefeuchter #
+##################
+
+ ## intensive Luftbefeuchtung ##
+  - alias: luftbefeuchter_intensive_Luftbefeuchtung
+    id: luftbefeuchter_intensive_Luftbefeuchtung
+    description: 'aktiviert die intensive Luftbefeuchtung, wenn die Luftfeuchtigkeit unter 45% fällt.'
+    
+    trigger:
+    - below: 45
+      platform: numeric_state
+      entity_id: sensor.wohnzimmer_temperatursensor_luftfeuchtigkeit
+      for: '00:05:00'
+    action:
+    - data:
+        entity_id: fan.wohnzimmer_luftbefeuchter 
+      service: fan.turn_on
+    - data:
+        entity_id: fan.wohnzimmer_luftbefeuchter 
+        speed: high
+      service: fan.set_speed
+
+ ## Füllstandswarnung
+  - alias: luftbefeuchter_fuellstandswarnung
+    id: luftbefeuchter_fuellstandswarnung
+    description: Warnung wenn der Füllstand des Luftbefeuchters unter 25 fällt
+   
+    trigger:
+    - platform: template
+      value_template: "{{ state_attr('fan.wohnzimmer_luftbefeuchter', 'depth')| int < 25 and state_attr('fan.wohnzimmer_luftbefeuchter', 'depth')| int > 1 }}"
+      for: "00:05:00"
+    action:
+    - service: notify.notify
+      data_template:
+        title: Luftbefeuchter
+        message: Der Wasser im Luftbefeuchter ist leer.
+    - data:
+        data:
+          type: announce
+        message: Bitte Wasser im Luftbefeuchter nachfüllen.
+      service: notify.alexa_media_esszimmer_alexa
+
+ ## Luftfeuchtigkeit erreicht ##
+  - alias: luftbefeuchter_luftfeuchtigkeit_erreicht
+    id: luftbefeuchter_luftfeuchtigkeit_erreicht
+    description: 'Schaltet den Luftbefeuchter ab, wenn eine Luftfeuchtigkeit von 52,5% erreicht ist. '
+    trigger:
+    - above: 50
+      entity_id: sensor.wohnzimmer_temperatursensor_luftfeuchtigkeit
+      for: '00:05:00'
+      platform: numeric_state
+    action:
+    - alias: ''
+      entity_id: fan.wohnzimmer_luftbefeuchter
+      service: fan.turn_off
+
+ ## mittlere Luftbefeuchtung ##
+  - alias: luftbefeuchtung_mittlere_luftbefeuchtung
+    id: luftbefeuchtung_mittlere_luftbefeuchtung
+    description: 'aktiviert die mittlere Befeuchtung wenn Luftfeuchtigkeit unter 50% sinkt oder über 47,5 steigt.'
+    trigger:
+    - below: 47.5
+      entity_id: sensor.wohnzimmer_temperatursensor_luftfeuchtigkeit
+      for: '00:05:00'
+      platform: numeric_state
+    condition:
+    - condition: template
+      value_template: "{{ state_attr('weather.home', 'temperature')|int < 15 }}"
+    action:
+    - data:
+        entity_id: fan.wohnzimmer_luftbefeuchter
+      service: fan.turn_on
+    - data:
+        entity_id: fan.wohnzimmer_luftbefeuchter
+        speed: medium
+      service: fan.set_speed

@@ -1,0 +1,59 @@
+######
+# TV #
+######
+
+ ## Alexa aus wenn TV an ##
+  - alias: alexa_aus_wenn_TV_an
+    id: alexa_aus_wenn_TV_an
+    description: >-
+      Wenn der TV im Wohnzimmer eingeschaltet wird schalten die Alexas in EG ab.
+      So dass nicht beides unnötigerweise gleichzeitig läuft.
+      
+      Aber nur wenn im Wohnzimmer Spotify nicht läuft. So dass die Wiedergabe nicht
+      unterbrochen wird.
+    trigger:
+      - platform: state
+        entity_id: remote.eg_wohnzimmer_harmonyhub
+        to: "on"
+    condition:
+      condition: not
+      conditions:
+        - condition: template
+          value_template: "{{ is_state_attr('media_player.wohnzimmer_firetv', 'source', 'Spotify') }}"
+    action:
+      - service: media_player.turn_off
+        entity_id: media_player.wohnzimmer_alexa
+      - service: media_player.turn_off
+        entity_id: media_player.esszimmer_alexa
+      - service: media_player.turn_off
+        entity_id: media_player.kueche_alexa
+        
+ ## TV an wenn FireTV an ##
+  - alias: tv_an_wenn_firetv
+    id: tv_an_wenn_firetv
+    description: 'wenn FireTV übers Handy gestartet wird, automatisch in Harmony die entsprechende Aktion starten'
+    trigger:
+      - platform: state
+        entity_id: media_player.wohnzimmer_firetv
+        to: 'playing'
+    action:
+      service: remote.turn_on
+      entity_id: remote.eg_wohnzimmer_harmonyhub
+      data:
+        activity: FireTV
+
+ ## TV aus wenn FireTV aus ##
+  - alias: tv_aus_wenn_firetv_aus
+    id: tv_aus_wenn_firetv_aus
+    description: 'wenn FireTV nichtmehr läuft und der TV auf keiner anderen Aktivität läuft'
+    trigger:
+      - platform: state
+        entity_id: media_player.wohnzimmer_firetv
+        to: "off"
+    condition:
+      - condition: template
+        value_template: "{{ is_state_attr('remote.eg_wohnzimmer_harmonyhub', 'current_activity', 'FireTV') }}"
+    action:
+      - service: remote.turn_off
+        entity_id: remote.eg_wohnzimmer_harmonyhub
+

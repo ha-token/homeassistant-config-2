@@ -1,0 +1,14 @@
+  - alias: briefkasten_post
+    id: briefkasten_post
+      
+    trigger: 
+    - platform: state
+      entity_id: sensor.garten_briefkasten_aktion
+      to: "vibration"
+    
+    action:
+    # Benachrichtigung auf dem Handy
+    - service: notify.notify
+      data: 
+        message: "Etwas wurde in Briefkasten abgelegt"
+        title: "Sie haben Post"

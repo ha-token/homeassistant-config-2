@@ -1,0 +1,93 @@
+  - alias: dashboard_einschalten
+    id: dashboard_einschalten
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_kamin_bewegung
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_spiegel_bewegung
+      to: 'on'
+    action:
+    - service: light.turn_on
+      entity_id: light.dashboard_screen
+      
+  - alias: dashboard_ausschalten
+    id: dashboard_ausschalten
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_kamin_bewegung
+      to: 'off'
+    - platform: state
+      entity_id: binary_sensor.flur_bewegungsmelder_eg_spiegel_bewegung
+      to: 'off'
+    - platform: state
+      entity_id: light.dashboard_screen
+      for: 00:06:00
+    action:
+    - service: light.turn_off
+      entity_id: light.dashboard_screen
+      
+    ##############################
+    # Kamera Popup auf Dashboard #
+    ##############################
+  - alias: kamera_hof_popup
+    id: kamera_hof_popup
+    description: >-
+      Sobald Bewegung erkannt wird, wird das Kamerabild auf dem Dashboard angezeigt.
+    trigger:
+      platform: state
+      entity_id: binary_sensor.garten_kamera_hof_bewegung
+      to: 'on'
+      
+    # condition:
+      # - condition: state
+        # entity_id: input_boolean.christoph_zuhause
+        # state: "on"
+    
+    action:
+      - service: light.turn_on
+        entity_id: light.dashboard_screen
+    #   - service: browser_mod.call_service
+    #     data: 
+    #       entity_id: camera.garten_kamera_hof
+    #       deviceID:
+    #         - dashboard_fullykiosk
+      - service: browser_mod.command
+        data:
+          command: popup
+          title: Hof
+          deviceID:
+            - dashboard_fullykiosk
+          style:
+            .: |
+              :host .content {
+                height: 729px;
+                width: 1280px;
+              }
+          card:
+            type: 'custom:webrtc-camera'
+            url: !secret garten_kamera_hof_stream
+
+
+  - alias: kamera_hof_popup_schließen
+    id: kamera_hof_popup_schließen
+    description: >-
+      Wenn keine Bewegung mehr für 5 Minuten registriert wird, wird das Popup geschlossen.
+    trigger:
+      platform: state
+      entity_id: binary_sensor.garten_kamera_hof_bewegung
+      to: 'off'
+      for: 00:05:00
+      
+    # condition:
+      # - condition: state
+        # entity_id: input_boolean.christoph_zuhause
+        # state: "on"
+    
+    action:
+      - service: browser_mod.close_popup
+        data:
+          deviceID:
+            - dashboard_fullykiosk

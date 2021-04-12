@@ -1,0 +1,97 @@
+###############
+# Ladevorgang #
+###############
+
+ ## Ladevorgang beendet ## ------------------------------------------------------
+  - alias: makitaladegeraet_fertig
+    id: makitaladegeraet_fertig
+    trigger:
+    - above: 2
+      below: 10
+      entity_id: sensor.werkstatt_makitaladegeraet_energieverbrauch
+      for: "00:00:02"
+      platform: numeric_state
+    condition:
+    - condition: state
+      entity_id: input_select.makitaladegeraetstatus
+      state: 'Akku wird geladen'
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.makitaladegeraetstatus
+        option: 'Akku voll'
+
+ ## Benachrichtigung ## ---------------------------------------------------------
+  - alias: makitaladegeraet_benachrichtigung
+    id: makitaladegeraet_benachrichtigung
+    trigger:
+    - platform: state
+      entity_id: input_select.makitaladegeraetstatus
+      to: 'Akku voll'
+    condition:
+    action:
+    - service: notify.wohnzimmer_firetv
+      data:
+        title: HomeAssistant
+        message: Der Makitaakku ist voll
+        data:
+          color: indigo
+          fontsize: large
+    - service: notify.mobile_app_christoph_handy
+      data: 
+        message: Makitaakku ist voll.
+        title: Makitaakku
+        data:
+          persistent: true
+          tag: makitaakku_fertig
+
+ ## Ladegerät im Leerlauf ## ----------------------------------------------------
+  - alias: makitaladegeraet_idle
+    id: makitaladegeraet_idle
+    trigger:
+    - below: 2
+      entity_id: sensor.werkstatt_makitaladegeraet_energieverbrauch
+      for: 00:00:02
+      platform: numeric_state
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.makitaladegeraetstatus
+        option: Idle
+    - service: notify.mobile_app_christoph_handy
+      data:
+        message: clear_notification
+        data:
+         tag: makitaakku_fertig
+
+ ## Ladegerät in Betrieb ## ------------------------------------------------------  
+  - alias: makitaladegeraet_lauft
+    id: makitaladegeraet_lauft
+    trigger:
+    - above: 10
+      entity_id: sensor.werkstatt_makitaladegeraet_energieverbrauch
+      platform: numeric_state
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.makitaladegeraetstatus
+        option: Akku wird geladen
+
+#############
+# Sonstiges #
+#############
+
+ ## Ladegerät offline ## ---------------------------------------------------------
+  - alias: makitaladegeraet_offline
+    id: makitaladegeraet_offline
+    trigger:
+    - platform: state
+      entity_id: sensor.werkstatt_makitaladegeraet_energieverbrauch
+      to: 'unavailable'
+      for:
+        seconds: 5
+    action:
+    - service: input_select.select_option
+      data: 
+        entity_id: input_select.makitaladegeraetstatus
+        option: nicht eingesteckt

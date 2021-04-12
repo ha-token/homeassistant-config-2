@@ -1,0 +1,36 @@
+################
+# Schlafzimmer #
+################
+
+ ## Lüften ##
+  - alias: schlafzimmer_lueften
+    id: schlafzimmer_lueften
+    trigger:
+      - platform: template
+        value_template: "{{ (state_attr('weather.home', 'temperature') | float +2) < (state_attr('climate.dgschlafzimmerheizung_mode', 'current_temperature') | float ) }}"
+        for: 00:05:00
+    condition:
+      condition: numeric_state
+      entity_id: climate.dgschlafzimmerheizung_mode
+      value_template: "{{ state_attr('climate.dgschlafzimmerheizung_mode', 'current_temperature') }}"
+      above: 18
+    action:
+     - service: notify.notify
+       data: 
+         message: "Du kannst jetzt das Schlafzimmer lüften. Es ist kühl genug draußen."
+         title: "Schlafzimmer abkühlen"
+
+ ## Licht an/aus ##
+
+  - alias: schlafzimmer_licht
+    id: schlafzimmer_licht
+    trigger:
+      platform: device
+      domain: mqtt
+      device_id: 62b272b6084f41f7b359bccc63d2bc0f
+      type: action
+      subtype: single
+      discovery_id: 0x00158d000282cf46 action_single
+    action:
+      service: light.toggle
+      entity_id: light.schlafzimmer_licht
