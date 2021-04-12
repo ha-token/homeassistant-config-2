@@ -11,7 +11,7 @@
     action:
     - service: light.turn_on
       entity_id: light.dashboard_screen
-       
+
   - alias: dashboard_ausschalten
     id: dashboard_ausschalten
     description: ''
