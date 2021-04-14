@@ -5,8 +5,7 @@
                 style:
                   .: |
                     :host .content {
-                      height: 729px;
-                      width: 1280px;
+                      width: 1800px;
                     }
                 card:
                   type: 'custom:webrtc-camera'
