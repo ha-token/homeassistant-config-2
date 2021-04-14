@@ -18,3 +18,4 @@ ip_bans.yaml
 secrets.yaml
 known_devices.yaml
 google_calendars.yaml
+.omv_cookies.json
