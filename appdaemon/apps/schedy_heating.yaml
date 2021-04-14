@@ -1,0 +1,88 @@
+schedy_heating:  # This is our app instance name.
+  module: hass_apps_loader
+  class: SchedyApp
+  schedule_prepend:
+    # Schalte alle Heizkörper aus, wenn Außentemperatur über 12C
+    - x: "OFF if float(state('weather.home', 'temperature') or 0) > 12 else Next()"
+    - x: "OFF if is_off('input_boolean.heizung') else Next()"
+#    - x: "Mark(OFF, Mark.OVERLAY) if not is_empty(filter_entities('binary_sensor', window_room=room_name, state='on')) else Next()"
+  watched_entities:
+    - "group.haus"
+    - "weather.home:temperature"
+    - "input_boolean.absent_long"
+    - "group.ferien_und_feiertage"
+    - "binary_sensor.bad_fenster_links_contact"
+    - "input_boolean.heizung"
+  actor_type: thermostat
+  rooms:
+    wohnesszimmer:
+      actors:
+        climate.wohnzimmer_heizung_links:
+        climate.wohnzimmer_heizung_rechts:
+        climate.esszimmer_heizung_links:
+        climate.esszimmer_heizung_rechts:
+      schedule:
+      - v: 21.5
+        rules:   
+        # Regelung Ferien-------------------------------------------------------
+        - rules:
+          # aktiviere Plan in den Ferien und nur wenn jemand Zuhause ist
+          - x: "Next() if is_on('group.ferien_und_feiertage')and is_off('input_boolean.absent_long') else Break()"
+          - { start: "06:00", end: "23:00" }
+          - v: 18
+        # Regelung Wochenende---------------------------------------------------
+        - weekdays: 6-7
+          rules:
+          # aktiviere Heizung wenn jemand Zuhause
+          - x: "Next() if is_off('input_boolean.absent_long') else Break()"
+          - { start: "06:00", end: "23:00" }
+        # Regelung Wochentage---------------------------------------------------
+        - weekdays: 1-4
+          rules:
+          - { start: "13:00", end: "22:00" }
+        - weekdays: 5
+          rules:
+          - { start: "11:30", end: "23:00" }
+      - v: 18
+      
+    schlafzimmer:
+      actors:
+        climate.schlafzimmer_heizung:
+      schedule:
+      - v: 18
+        rules:
+        - x: "Next() if is_off('input_boolean.absent_long') else Break()"
+        - { start: "00:00", end: "07:30" }
+      - v: 16
+    
+    buero:
+      actors:
+        climate.buero_heizung:
+      schedule:
+        - v: 21
+          rules:
+          - rules:
+            # aktiviere Plan in den Ferien und nur wenn jemand Zuhause ist
+            - x: "Next() if is_on('group.ferien_und_feiertage')and is_off('input_boolean.absent_long') else Break()"
+            - { start: "06:00", end: "20:00" }
+            - v: 18
+          - weekdays: 6-7
+            rules:
+            - x: "Next() if is_off('input_boolean.absent_long') else Break()"
+            - { start: "10:00", end: "20:00" }
+          - weekdays: 1-5
+            rules:
+            - { start: "13:00", end: "20:00" }
+        - v: 18
+     
+    bad:
+      actors:
+        climate.bad_heizung:
+      schedule:
+        - v: 23
+          rules:
+          - x: "Next() if is_off('input_boolean.absent_long') else Break()"
+          - x: "Next() if is_off('binary_sensor.bad_fenster_links_contact') else 'off'"
+          - { start: "05:00", end: "09:00" }
+          - { start: "18:00", end: "22:00" }
+        - v: 19
