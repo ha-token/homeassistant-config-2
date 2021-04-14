@@ -6,6 +6,24 @@ class WebRTCCamera extends HTMLElement {
         }
     }
 
+    async _connect(hass, pc) {
+        const data = await hass.callWS({
+            type: 'webrtc/stream',
+            url: this.config.url,
+            sdp64: btoa(pc.localDescription.sdp)
+        });
+
+        try {
+            const remoteDesc = new RTCSessionDescription({
+                type: 'answer',
+                sdp: atob(data.sdp64)
+            });
+            await pc.setRemoteDescription(remoteDesc);
+        } catch (e) {
+            console.warn(e);
+        }
+    }
+
     async _init(hass) {
         // don't know if this may happen
         if (typeof (this.config) === 'undefined') {
@@ -15,29 +33,13 @@ class WebRTCCamera extends HTMLElement {
         const pc = new RTCPeerConnection({
             iceServers: [{
                 urls: ['stun:stun.l.google.com:19302']
-            }]
+            }],
+            iceCandidatePoolSize: 20
         });
 
-        pc.onnegotiationneeded = async () => {
-            // console.log('onnegotiationneeded');
-            const offer = await pc.createOffer();
-            await pc.setLocalDescription(offer);
-
-            const data = await hass.callWS({
-                type: 'webrtc/stream',
-                url: this.config.url,
-                sdp64: btoa(pc.localDescription.sdp)
-            });
-            // console.log(data);
-
-            try {
-                const remoteDesc = new RTCSessionDescription({
-                    type: 'answer',
-                    sdp: atob(data.sdp64)
-                });
-                await pc.setRemoteDescription(remoteDesc);
-            } catch (e) {
-                console.warn(e);
+        pc.onicecandidate = (e) => {
+            if (e.candidate === null) {
+                this._connect(hass, pc);
             }
         }
 
@@ -46,11 +48,14 @@ class WebRTCCamera extends HTMLElement {
             this.stream.addTrack(event.track);
         }
 
+        // https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+        const isFirefox = typeof InstallTrigger !== 'undefined';
+
         // recvonly don't work with Firefox
         // https://github.com/pion/webrtc/issues/717
         // sendrecv don't work with some Android mobile phones and tablets
         // and Firefox can't play video with Bunny even with sendrecv
-        const direction = this.config.firefox !== true ? 'recvonly' : 'sendrecv';
+        const direction = !isFirefox ? 'recvonly' : 'sendrecv';
 
         pc.addTransceiver('video', {'direction': direction});
         if (this.config.audio !== false) {
@@ -71,6 +76,8 @@ class WebRTCCamera extends HTMLElement {
         pingChannel.onclose = () => {
             clearInterval(intervalId);
         }
+
+        pc.setLocalDescription(await pc.createOffer());
     }
 
     set hass(hass) {
@@ -82,9 +89,20 @@ class WebRTCCamera extends HTMLElement {
             video.controls = true;
             video.muted = true;
             video.playsInline = true;
+            video.poster = this.config.poster || '';
             video.style.width = '100%';
             video.style.display = 'block';
             video.srcObject = this.stream;
+
+            const observer = new IntersectionObserver(
+                (entries, observer) => {
+                    entries.forEach((entry) => {
+                        entry.isIntersecting ? video.play() : video.pause();
+                    });
+                },
+                {threshold: this.config.intersection || 0.5}
+            );
+            observer.observe(video);
 
             const card = document.createElement('ha-card');
             // card.header = 'WebRTC Card';
