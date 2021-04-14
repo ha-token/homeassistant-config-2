@@ -1,0 +1,1387 @@
+button_card_templates: !include button_card_templates.yaml
+
+##########################################################################
+#                                                                        #
+#                              * LOVELACE *                              #
+#                                                                        #
+##########################################################################
+ 
+title: Laemmersteig
+kiosk_mode:
+  hide_header: true
+  hide_sidebar: true
+views:
+  - panel: true
+    theme: tablet
+    path: default_view
+    cards:
+      - type: picture-elements
+        image: /local/background.png
+        theme: tablet
+        elements: 
+
+          # # markdown fix
+          # - type: custom:hui-element
+            # card_type: markdown
+            # style: {opacity: 0}
+            # content: preload
+
+          #################################################
+          #                                               #
+          #                   COVID-19                    #
+          #                                               #
+          #################################################
+
+          # - type: custom:hui-element
+            # card_type: markdown
+            # style:
+              # top: 93.65%
+              # left: 70.2%
+            # content: >
+              # {{ state_attr('sensor.covid_19_template', 'render') }}
+            # card_mod:
+              # class: markdown-covid19
+              # style:
+                # .: |
+                  # ha-markdown {
+                    # padding: 0 !important;
+                  # }
+                # ha-markdown:
+                  # $: |
+                    # ha-markdown-element {
+                      # opacity: 0.6;
+                    # }
+                    # ha-markdown-element > font > ha-icon {
+                      # vertical-align: 3%;
+                      # opacity: 0.4;
+                    # }
+
+          ##########################################################################
+          #                                                                        #
+          #                              * SIDEBAR *                               #
+          #                                                                        #
+          ##########################################################################
+
+          - type: image
+            image: local/sidebar.png?=v2
+            style:
+              top: 49.24%
+              left: 10.6%
+              width: 21.5%
+              pointer-events: none
+              border-right: 2px solid rgba(58,69,73,0.2)
+            card_mod:
+              style:
+                hui-image$div: |
+                  #brokenImage {
+                    opacity: 0 !important;
+                  }
+          #################################################
+          #                                               #
+          #                   MARKDOWN                    #
+          #                                               #
+          #################################################
+
+          - type: custom:hui-element
+            card_type: markdown
+            style:
+              top: 9%
+              left: 11.1%
+            card_mod:
+              class: markdown-sidebar
+              style:
+                .: |
+                  ha-markdown {
+                    padding: 0 !important;
+                  }
+                ha-markdown:
+                  $: |
+                    :host {
+                      opacity: 0.9;
+                    }
+                    ha-markdown-element > p > span {
+                      font-family: SF Text;
+                      font-size: 5vw;
+                      font-weight: 200;
+                      margin-left: -0.3vw;
+                      letter-spacing: -0.05vw;
+                    }
+                    ha-markdown-element > p > span > span {
+                      position: relative;
+                      top: -.09em;
+                    }
+            content: >
+              <span>{{ now().strftime('%H') }}<span>:</span>{{ now().strftime('%M') }}</span>
+              
+              
+              <font color='#6a7377'><b>{{ states('sensor.sidebar_day') }}</b><br>
+              <b>{{ states('sensor.sidebar_date') }}</b> </font><br> 
+              
+              <font color='#6a7377'><b>Außentemperatur</b><br> 
+              <b>{{ state_attr('weather.home', 'temperature') }}°</b><br></font><br><br>
+              
+              <b>Inzidenzen</b><br>
+              <b>Bayern: <font color='#e89210'>{{ states('sensor.inzidenz_bayern')| round(0) }}</b></font><br>
+              <b>Memmingen: <font color='#e89210'>{{ states('sensor.inzidenz_memmingen')| round(0) }}</b></font><br>
+              <b>Unterallgäu: <font color='#e89210'>{{ states('sensor.inzidenz_unterallgau')| round(0) }}</b></font><br>
+              
+              
+
+
+
+          #################################################
+          #                                               #
+          #                 LAUNDRY TIMER                 #
+          #                                               #
+          #################################################
+
+# Hier kommt evtl das Bewohnerding hin
+        #   - type: conditional
+        #     conditions:
+        #       - entity: input_boolean.absent_long
+        #         state: 'off'
+        #     elements:
+        #       - type: custom:button-card
+        #         entity: timer.waschmaschine_laeuft
+        #         show_icon: false
+        #         show_name: false
+        #         show_state: true
+        #         tap_action:
+        #           services: |
+        #             [[[ hass.callService('timer', 'cancel', {entity_id: 'timer.waschmaschine_laeuft'});
+        #             hass.callService('timer', 'start', {entity_id: 'timer.waschmaschine_laeuft'}); ]]]
+        #         hold_action:
+        #           services: |
+        #             [[[ hass.callService('timer', 'cancel', {entity_id: 'timer.waschmaschine_laeuft'});
+        #             hass.callService('input_boolean', 'turn_off', {entity_id: 'input_boolean.absent_long'}); ]]]
+        #         styles:
+        #           card:
+        #             [background: '#202a2f30', border-radius: 0.7vw, box-shadow: none, border: '0.2vw solid #292c2e']
+        #           state:
+        #             [font-size: 2.7vw, font-family: SF Mono, opacity: 0.65, padding: 0.55vw 1.2vw 0.5vw 1.2vw]
+        #         style:
+        #           top: 77%
+        #           left: 10.7%
+        #           font-size: 1.6vw
+  
+          #################################################
+          #                                               #
+          #                Batteriebutton                 #
+          #                                               #
+          #################################################
+
+          - type: icon
+            icon: mdi:flash-circle
+            title: Batteriestände
+            style:
+              top: 87.41%
+              left: 4.8%
+            tap_action: !include popup/sidebar_batterie.yaml
+            card_mod:
+              style: |
+                :host {
+                  {% if states('sensor.ench_battery') != '0' %}
+                    color: rgb(35,78,106) !important; 
+                    opacity: 1 !important;
+                  {% endif %}
+                  }            
+
+          #################################################
+          #                                               #
+          #                  INFO BUTTON                  #
+          #                                               #
+          #################################################
+
+          - type: icon
+            icon: mdi:information-outline
+            title: Information
+            style:
+              top: 87.41%
+              left: 10.7%
+            tap_action: !include popup/sidebar_information.yaml
+
+          #################################################
+          #                                               #
+          #                UPDATES BUTTON                 #
+          #                                               #
+          #################################################
+
+          - type: icon
+            icon: mdi:arrow-up-bold-circle-outline
+            title: null
+            style:
+              top: 87.41%
+              left: 16.55%
+            tap_action:
+              !include popup/sidebar_update.yaml
+            hold_action:
+              action: call-service
+              service: homeassistant.update_entity
+              service_data:
+                entity_id: sensor.hacs
+            card_mod:
+              style: |
+                :host {
+                  {% if is_state('binary_sensor.sidebar_update_color', 'on') %}
+                    color: rgb(35,78,106) !important; 
+                    opacity: 1 !important;
+                  {% endif %}
+                  }
+  
+          ##########################################################################
+          #                                                                        #
+          #                             * WOHNZIMMER *                             #
+          #                                                                        #
+          ##########################################################################
+ 
+          - type: state-label
+            entity: sensor.placeholder
+            attribute: wohnzimmer
+            style: &state-label
+              top: 9.15%
+              left: 25.4%
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              max-width: 1px
+              cursor: default
+              opacity: 0.85
+              pointer-events: none
+ 
+          #################################################
+          #                                               #
+          #                   LICHT                       #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: light.wohnzimmer_licht
+            name: Licht
+            style:
+              top: 20.35%
+              left: 30.31%
+              width: 10%
+            custom_fields:
+              icon_hue: &icon_hue >
+                [[[ const state = entity.state === 'on' ? 'animate' : null;
+                return `<svg viewBox="0 0 50 50"><style>@keyframes animate{0%{transform: scale(0.85);}20%{transform: scale(1.1);}40%{transform: scale(0.95);}60%{transform: scale(1.03);}80%{transform: scale(0.97);}100%{transform: scale(1);}}.animate{animation: animate 0.8s; transform-origin: center;}</style>
+                <path fill="#9da0a2" d="M27.4 47.3h-4.9s-.7.1-.7.8.4.9.7.9h4.9c.3 0 .7-.1.7-.9s-.7-.8-.7-.8zm3.3-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-3H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9s-.9-.8-.9-.8zm5.2-23.2c-3.3-5.3-7-5.6-10.9-5.6-3.8 0-8.4.4-10.9 5.6-.1.1-.1.3.1.7.4.8 3.3 7.2 3.2 18.8 0 1.1-.1 1.6 0 1.7 0 .1 0 .7 1.1.7h13c1 0 1-.5 1.1-.7v-1.7c-.1-11.6 2.8-18 3.2-18.8.1-.4.1-.5.1-.7"/>
+                <path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z"/></svg>`; ]]]
+            styles: &icon_hue_styles
+              custom_fields:
+                icon_hue:
+                  [top: 11%, left: 4.5%, width: 3.05vw, position: absolute]
+            template: light
+        
+          #################################################
+          #                                               #
+          #                   HARMONY                     #
+          #                                               #
+          #################################################
+    
+          - type: custom:button-card
+            entity: remote.eg_wohnzimmer_harmonyhub
+            name: Harmony
+            state_display: >
+                [[[ if (entity.attributes.current_activity === 'Amazon Prime' ) { return 'Prime'; }
+                    if (entity.attributes.current_activity === 'PowerOff' ) { return 'Aus'; }
+                else { return entity.attributes.current_activity; }
+                ]]]
+            style:
+              top: 20.35%
+              left: 41.31%
+              width: 10%
+            tap_action: !include popup/harmony.yaml
+            template: 
+              - base
+              - icon_tv
+              - loader
+
+          #################################################
+          #                                               #
+          #                LUFTBEFEUCHTER                 #
+          #                                               #
+          #################################################
+         
+          - type: custom:button-card
+            entity: fan.wohnzimmer_luftbefeuchter
+            name: Befeuchter
+            show_state: false
+            triggers_update:
+              ['fan.wohnzimmer_luftbefeuchter', 'input_boolean.wohnzimmer_luftbefeuchter']
+            style:
+              top: 37.9%
+              left: 30.31%
+              width: 10%
+            tap_action:
+              action: toggle
+            hold_action: 
+              action: more-info
+            custom_fields:
+              icon_fan: >
+                [[[ const boolean = states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state;
+                const style = '<svg viewBox="0 0 50 50"> <style>@keyframes rotate{0%{visibility:visible;transform:rotate(0deg)}100%{transform:rotate(1080deg)}}.start{animation:rotate 2.8s ease-in;transform-origin:center;fill:#5daeea;visibility:hidden}.on_delay{animation:rotate 1.8s linear infinite;transform-origin:center;fill:#5daeea;animation-delay:2.8s;visibility:hidden}.on{animation:rotate 1.8s linear infinite;transform-origin:center;fill:#5daeea;visibility:hidden}.end{animation:rotate 2.8s;transform-origin:center;fill:#9ca2a5;animation-timing-function:cubic-bezier(.61,1,.88,1)}</style>';
+                const path = '<circle cx="25" cy="25" r="6.6"/> <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>';
+                if (entity.state === 'off' && boolean === 'off') { return `${style}<g class="end">${path}</g></svg>`; }
+                if (entity.state === 'on' && boolean === 'off') { return `${style}<g class="start">${path}</g><g class="on_delay">${path}</g></svg>`; }
+                if (entity.state === 'on' && boolean === 'on') { return `${style}<g class="on">${path}</g></svg>`; }
+                else if (entity.state==='off' && boolean==='on') { return `${style}<g fill="#9ca2a5">${path}</g></svg>`; } ]]]
+              level: >
+                [[[ {
+                const level = entity.attributes.depth;
+                const stroke_color = entity.state === 'on' ? '#b2b2b2' : '#313638'; 
+                const fill_color = entity.state === 'on' ? 'none' : '#FFFFFF08';
+                const radius = 20.5; const circumference = radius * 2 * Math.PI; 
+                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" style="
+                transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference - level / 100 * circumference};" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${level}<tspan font-size="10">%</tspan></text></svg>`; } ]]]
+              graph:
+                card: 
+                  type: 'custom:mini-graph-card'
+                  entities:
+                    - sensor.wohnzimmer_temperatursensor_luftfeuchtigkeit
+                  color_thresholds:
+                    - color: '#007BFE'
+                      value: 55
+                    - color: '#26fe00'
+                      value: 47.5
+                    - color: '#FF5733'
+                      value: 40
+                    - color: '#fe0000'
+                      value: 35
+                  line_color: blue
+                  line_width: 8
+                  font_size: 75
+                  show:
+                    name: false
+                    icon: false
+                    state: false
+            styles:
+              custom_fields:
+                icon_fan:
+                  [top: 9%, left: 10%, width: 3vw, position: absolute]
+                level: 
+                  [top: 6.5%, left: 54.5%, width: 3.5vw, position: absolute, letter-spacing: 0.03vw]
+                graph:
+                  [top: 67%, left: 0%, width: 100%, position: absolute]
+            template: base
+
+          #################################################
+          #                                               #
+          #                   HEIZUNG                     #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: climate.wohnesszimmer
+            name: Wohnzimmer
+            style:
+              top: 37.9%
+              left: 41.31%
+              width: 10%
+            template: climate_group
+
+          ##########################################################################
+          #                                                                        #
+          #                                * ESSEN *                               #
+          #                                                                        #
+          ##########################################################################
+
+          - type: state-label 
+            entity: sensor.placeholder
+            attribute: essen
+            style:
+              top: 9.15%
+              left: 50.2%
+              <<: *state-label
+
+          #################################################
+          #                                               #
+          #                  KUECHENLICHT                 #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: light.kueche_licht
+            name: Küchenlicht
+            style:
+              top: 20.35%
+              left: 55.18%
+              width: 10%
+            custom_fields:
+              icon_hue: *icon_hue 
+            styles: *icon_hue_styles
+            template: light
+
+          #################################################
+          #                                               #
+          #                  SPÜLENLICHT                  #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: light.kueche_licht_spuele
+            name: Spülenlicht
+            style:
+              top: 20.35%
+              left: 66.14%
+              width: 10%
+            custom_fields:
+              icon_spot: &icon_spot >
+                [[[ const state = entity.state === 'on' ? 'animate_on' : 'animate_off';
+                return `<svg viewBox="0 0 50 50"><style>@keyframes animate_on{0%{transform: rotateZ(0deg); animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);}70%{transform: rotateZ(-15deg); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);}75%{transform: rotateZ(-15deg); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);}88%{transform: rotateZ(-11deg);}100%{transform: rotateZ(-15deg);}}.animate_on{animation: animate_on 0.7s; transform-origin: 40% 20%; animation-fill-mode: forwards; animation-delay: -0.1s;}@keyframes animate_off{0%{transform: rotateZ(-15deg); animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);}70%{transform: rotateZ(0deg); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);}75%{transform: rotateZ(0deg); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);}88%{transform: rotateZ(-4deg);}100%{transform: rotateZ(0deg);}}.animate_off{animation: animate_off 0.7s; transform-origin: 40% 20%; animation-fill-mode: forwards;}</style>
+                <path style="clip-path: url(#mask);" fill="#9da0a2" d="M40.5.8H17.1c-.1 0-.1 0-.1.1A3.12 3.12 0 0 0 20.1 4h6.1c.1 0 .1 0 .1.1v7.4L18 19.1l3.6 3.5 9.1-8.6c.4-.4.6-1 .7-1.6V4c0-.1 0-.1.1-.1h6c1.7.1 3.1-1.3 3-3.1z"/><defs><clipPath id="mask"><path class="${state}" d="M0 9.1h24l8.3 8.8H50V-9H0z"/></clipPath></defs><path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M25.5 46.4s1.4.5 10.4-8.2c.5-.4 6.3-6.3 5.8-7.1-.7-.8-18.6-19.5-18.6-19.5s-.6-.9-8.6 6.4c-.6.5-8.7 8-7.7 9.1l18.7 19.3z"/></svg>`; ]]]
+            styles: &icon_spot_styles
+              custom_fields:
+                icon_spot:
+                  [top: 11.5%, left: 8%, width: 2.7vw, position: absolute]
+            template: light
+
+          #################################################
+          #                                               #
+          #                 Alexa Esszimmer               #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity:  media_player.esszimmer_alexa
+            name: Esszimmer
+            state:
+              - value: 'playing'
+                styles:
+                  card: [background-color: 'rgba(255, 255, 255, 0.8)']
+                  name: [color: 'rgba(0, 0, 0, 0.6)']
+                  state: [color: 'rgba(0, 0, 0, 0.6)']
+            style:
+              top: 37.9%
+              left: 55.18%
+              width: 10%
+            tap_action:
+              action: more-info
+            hold_action: !include popup/studio_monitorer.yaml
+            custom_fields:
+              icon_monitors: >
+                [[[ if (entity.state === 'playing') {
+                return '<svg viewBox="0 0 50 50"><style>@keyframes animate{35%{transform: scale(0.8); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);}36%{transform: translateY(0%);}49%{transform: scale(1.25);}63%{transform: scale(0.85); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);}77%{transform: scale(1.15); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);}95%{transform: scale(1);}}.animate{animation: animate 1.4s; transform-origin: center;}@keyframes rubber{0%{transform: scale(1);}40%{transform: scale(1);}49%{transform: scale(0.95);}63%{transform: scale(1);}77%{transform: scale(0.95);}100%{transform: scale(1);}}.rubber{animation: rubber 1.3s; transform-origin: center;}</style>
+                <g class="rubber"><path fill="#686868" d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z"/><path fill="#2a2a2a" d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z"/> </g> <path class="animate" fill="#e5dd00" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z"/></svg>'; }
+                else { return '<svg viewBox="0 0 50 50"><path fill="#9da0a2" d="M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z"/></svg>'; } ]]]
+              # circle: >
+                # [[[ if (entity.state === 'playing') {
+                # const volume = states['switch.zigbee_repeater_switch'].state;
+                # const radius = 20.5; const circumference = radius * 2 * Math.PI;
+                # return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" style="
+                # transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference - volume / 100 * circumference};" />
+                # <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${volume}<tspan font-size="10">%</tspan></text></svg>`; } ]]]
+            styles:
+              custom_fields:
+                icon_monitors:
+                  [top: 11%, left: 7%, width: 2.8vw, position: absolute]
+            template: ['base']
+
+          #################################################
+          #                                               #
+          #                 Alexa Küche                   #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: media_player.kueche_alexa
+            name: Küche
+            state:
+              - value: 'playing'
+                styles:
+                  card: [background-color: 'rgba(255, 255, 255, 0.8)']
+                  name: [color: 'rgba(0, 0, 0, 0.6)']
+                  state: [color: 'rgba(0, 0, 0, 0.6)']
+            style:
+              top: 37.9%
+              left: 66.14%
+              width: 10%
+            tap_action:
+              action: more-info
+            hold_action: !include popup/studio_monitorer.yaml
+            custom_fields:
+              icon_monitors: >
+                [[[ if (entity.state === 'playing') {
+                return '<svg viewBox="0 0 50 50"><style>@keyframes animate{35%{transform: scale(0.8); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);}36%{transform: translateY(0%);}49%{transform: scale(1.25);}63%{transform: scale(0.85); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);}77%{transform: scale(1.15); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);}95%{transform: scale(1);}}.animate{animation: animate 1.4s; transform-origin: center;}@keyframes rubber{0%{transform: scale(1);}40%{transform: scale(1);}49%{transform: scale(0.95);}63%{transform: scale(1);}77%{transform: scale(0.95);}100%{transform: scale(1);}}.rubber{animation: rubber 1.3s; transform-origin: center;}</style>
+                <g class="rubber"><path fill="#686868" d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z"/><path fill="#2a2a2a" d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z"/> </g> <path class="animate" fill="#e5dd00" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z"/></svg>'; }
+                else { return '<svg viewBox="0 0 50 50"><path fill="#9da0a2" d="M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z"/></svg>'; } ]]]
+              circle: >
+                [[[ if (entity.state === 'on') {
+                const volume = states['switch.zigbee_repeater_switch'].state;
+                const radius = 20.5; const circumference = radius * 2 * Math.PI;
+                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" style="
+                transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference - volume / 100 * circumference};" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${volume}<tspan font-size="10">%</tspan></text></svg>`; } ]]]
+            styles:
+              custom_fields:
+                icon_monitors:
+                  [top: 11%, left: 7%, width: 2.8vw, position: absolute]
+            template: base
+
+          ##########################################################################
+          #                                                                        #
+          #                               * BAD *                                  #
+          #                                                                        #
+          ##########################################################################
+  
+          - type: state-label
+            entity: sensor.placeholder
+            attribute: bad
+            style:
+              top: 9.15%
+              left: 75.1%
+              <<: *state-label
+
+          #################################################
+          #                                               #
+          #                  Badheizung                   #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: climate.bad_heizung
+            name: Heizung
+            style:
+              top: 20.35%
+              left: 80.05%
+              width: 10%
+            template: climate
+
+
+          #################################################
+          #                                               #
+          #                    FENSTER                    #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: binary_sensor.bad_fenster_links_contact
+            name: Fenster
+            style:
+              top: 20.35%
+              left: 91.05%
+              width: 10%
+            custom_fields:
+              icon_window: >             
+                [[[ if (entity.state === 'on') 
+                {
+                return `<svg xmlns="http://www.w3.org/2000/svg" width="52" height="43"  xmlns:v="https://vecta.io/nano"><path stroke-opacity="NaN" fill-opacity="NaN" opacity="NaN" d="M.402.475h8.825v38.257H.402zm42.518 0h8.263v37.882H42.92z" fill="#ede7e9" stroke-width="null" stroke-dasharray="null" stroke="null"/><path fill="#bcb7b3" stroke="null" d="M.286 38.33h51v4h-51z"/><g fill="#7fabda"><path d="M3.057 3.33h21v32h-21z"/><path d="M28.177 3.33h20.791v32H28.177z" stroke="null"/></g><path fill="#ede7e9" stroke="null" d="M45.177 3.33v-3h-38v3h17v32h-15v3h34v-3h-15v-32z"/><path stroke="null" d="M16.615 3.33h7.5v5l-21 14v-10zm24.902 0h7.411v5l-20.75 14v-10z" fill="#a4c9ea"/><path stroke-miterlimit="10" stroke-linecap="round" stroke-width="2" stroke="#556080" fill="none" d="M27.177 18.33h4"/><path stroke="null" fill="#a4c9ea" d="M16.615 3.33h7.5v5l-21 14v-10z"/></svg>`; 
+                } 
+                if (entity.state === 'off') 
+                {
+                return `<svg xmlns="http://www.w3.org/2000/svg" width="52" height="43"  xmlns:v="https://vecta.io/nano"><path stroke-opacity="NaN" fill-opacity="NaN" opacity="NaN" d="M.402.475h8.825v38.257H.402zm42.518 0h8.263v37.882H42.92z" fill="#ede7e9" stroke-width="null" stroke-dasharray="null" stroke="null"/><path fill="#bcb7b3" stroke="null" d="M.286 38.33h51v4h-51z"/><g fill="#7fabda"><path d="M3.057 3.33h21v32h-21z"/><path d="M28.177 3.33h20.791v32H28.177z" stroke="null"/></g><path fill="#ede7e9" stroke="null" d="M45.177 3.33v-3h-38v3h17v32h-15v3h34v-3h-15v-32z"/><path stroke="null" d="M16.615 3.33h7.5v5l-21 14v-10zm24.902 0h7.411v5l-20.75 14v-10z" fill="#a4c9ea"/><path stroke-miterlimit="10" stroke-linecap="round" stroke-width="2" stroke="#556080" fill="none" d="M27.177 18.33h4"/><path stroke="null" fill="#a4c9ea" d="M16.615 3.33h7.5v5l-21 14v-10z"/></svg>`; 
+                }
+                ]]]
+                
+            styles:
+              custom_fields:
+                icon_window:
+                  [top: 11%, left: 11%, width: 4vw, position: absolute]
+            template: base
+            
+          #################################################
+          #                                               #
+          #                  TEMPERATUR                   #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: sensor.bad_temperatursensor_temperatur
+            name: Temperatur
+            show_state: false
+            custom_fields:
+              circle: >
+                [[[ {
+                const temperature = Math.round(entity.attributes.temperature);
+                const stroke_color = entity.state === 'heat' ? '#b2b2b2' : '#313638'; 
+                const fill_color = entity.state === 'heat' ? 'none' : '#FFFFFF08';
+                const radius = 20.5; 
+                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" style="
+                transform: rotate(-90deg); transform-origin: 50% 50%;" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${temperature}<tspan font-size="10">°</tspan></text></svg>`; } ]]]
+              graph:
+                card: 
+                  type: 'custom:mini-graph-card'
+                  entities:
+                    - sensor.bad_temperatursensor_temperatur
+                  color_thresholds:
+                    - color: '#d60000'
+                      value: 22
+                    - color: '#d63d00'
+                      value: 21
+                    - color: '#d66000'
+                      value: 20
+                    - color: '#007dd6'
+                      value: 18
+                  line_color: blue
+                  line_width: 8
+                  font_size: 75
+                  show:
+                    name: false
+                    icon: false
+                    state: false
+            style:
+              top: 37.9%
+              left: 80.05%
+              width: 10%
+            tap_action: 
+              action: more-info 
+            styles: 
+              custom_fields:
+                graph:
+                  [top: 67%, left: 0%, width: 100%, position: absolute]
+                circle: 
+                  [top: 6.5%, left: 54.5%, width: 3.5vw, position: absolute, letter-spacing: 0.03vw]
+            template: base
+            
+          #################################################
+          #                                               #
+          #               LUFTFEUCHTIGKEIT                #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: sensor.bad_temperatursensor_luftfeuchtigkeit
+            name: Luftfeuchte
+            show_state: false
+            custom_fields:
+              circle: >
+                [[[ {
+                const humidity = Math.round(entity.attributes.humidity);
+                const stroke_color = entity.state === 'heat' ? '#b2b2b2' : '#313638'; 
+                const fill_color = entity.state === 'heat' ? 'none' : '#FFFFFF08';
+                const radius = 20.5; 
+                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" style="
+                transform: rotate(-90deg); transform-origin: 50% 50%;" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${humidity}<tspan font-size="10">%</tspan></text></svg>`; } ]]]
+              graph:
+                card: 
+                  type: 'custom:mini-graph-card'
+                  entities:
+                    - sensor.bad_temperatursensor_luftfeuchtigkeit
+                  color_thresholds:
+                    - color: '#1102ba'
+                      value: 55
+                    - color: '#007BFE'
+                      value: 47.5
+                    - color: '#26fe00'
+                      value: 35
+                  line_color: blue
+                  line_width: 8
+                  font_size: 75
+                  show:
+                    name: false
+                    icon: false
+                    state: false
+            style:
+              top: 37.9%
+              left: 91.05%
+              width: 10%
+            tap_action: 
+              action: more-info 
+            styles: 
+              custom_fields:
+                graph:
+                  [top: 67%, left: 0%, width: 100%, position: absolute]
+                circle: 
+                  [top: 6.5%, left: 54.5%, width: 3.5vw, position: absolute, letter-spacing: 0.03vw]
+            template: base
+
+          ##########################################################################
+          #                                                                        #
+          #                               * MEDIA *                                #
+          #                                                                        #
+          ##########################################################################
+ 
+          - type: state-label
+            entity: sensor.placeholder
+            attribute: media
+            style:
+              top: 53.4%
+              left: 25.4%
+              <<: *state-label
+
+          - type: custom:swipe-card
+            start_card: 1
+            parameters:
+              roundLengths: true
+              effect: coverflow
+              speed: 650
+              spaceBetween: 20
+              threshold: 7
+              coverflowEffect:
+                rotate: 80
+                depth: 300
+            style:
+              top: 56.55%
+              left: 35.8%
+              width: 20.97%
+              height: 1px
+              --ha-card-border-radius: .88vw
+            cards:
+
+                  #################################################
+                  #                                               #
+                  #           * SMALL MEDIA CONTROLS *            #
+                  #                                               #
+                  #################################################
+
+              - type: picture-elements
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
+                elements:
+
+                  # SMALL FIRETV
+                  - type: custom:button-card
+                    entity: media_player.wohnzimmer_firetv
+                    name: FireTV
+                    # custom_fields:
+                    #   icon: *icon_apple_tv
+                    style:
+                      top: 23.9%
+                      left: 23.8%
+                      width: 47.7%
+                    template: media
+
+                  # SMALL PRIME
+                  - type: custom:button-card
+                    entity: media_player.wohnzimmer_tv
+                    name: Prime
+                    # custom_fields:
+                    #   icon: *icon_apple_tv
+                    style:
+                      top: 23.9%
+                      left: 76.2%
+                      width: 47.7%
+                    template: media
+
+                  # SMALL VODAFONE
+                  - type: custom:button-card
+                    entity: switch.eg_wohnzimmer_harmonyhub_fernsehen
+                    name: Vodafone
+                    # custom_fields:
+                    #   icon: *icon_spotify
+                    style:
+                      top: 76.2%
+                      left: 23.8%
+                      width: 47.7%
+                    template: media
+
+                  # SMALL SPOTIFY
+                  - type: custom:button-card
+                    entity: media_player.spotify_christoph_relxerd
+                    name: Spotify
+                    # custom_fields:
+                    #   icon: *icon_nest_mini
+                    style:
+                      top: 76.2%
+                      left: 76.2%
+                      width: 47.7%
+                    template: media
+
+                  #################################################
+                  #                                               #
+                  #                 * PLAYING *                   #
+                  #                                               #
+                  #################################################
+
+              - type: picture-elements
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
+                elements:
+
+                  #################################################
+                  #                                               #
+                  #              RECENTLY DOWNLOADED              #
+                  #                                               #
+                  #################################################
+
+                #   - type: conditional
+                #     conditions:
+                #       - entity: input_select.conditional_media
+                #         state: Zuletzt heruntergeladen
+                #     elements:
+                #       - type: custom:button-card
+                #         entity: sensor.plex_recently_added
+                #         triggers_update:
+                #           ['sensor.plex_recently_added']
+                #         name: Zuletzt heruntergeladen
+                #         state_display: >
+                #           [[[ const data = states[entity.entity_id].attributes.data;
+                #           const number = data[1].number == undefined ? '(' + data[1].aired.split('-')[0] + ')' : data[1].number;
+                #           return `${data[1].title} ${number}`; ]]]
+                #         custom_fields:
+                #           icon: >
+                #             <svg viewBox="0 0 50 50"><path d="M7.7.3h34.6c4.1 0 7.4 3.3 7.4 7.4v34.6c0 4.1-3.3 7.4-7.4 7.4H7.7c-4.1 0-7.4-3.3-7.4-7.4V7.7C.3 3.6 3.6.3 7.7.3z" fill="#282a2d"/><path d="M25,7.1H14.6L25,25L14.6,42.9H25L35.4,25L25,7.1z" fill="#e5a00d"/></svg>
+                #           blur: >
+                #             <svg viewBox="0 0 50 50" />
+                #         styles:
+                #           custom_fields:
+                #             media_image: &plex_poster
+                #               [background-position: center center, background-image: 
+                #               "[[[ return 'url(' + states[entity.entity_id].attributes.data[1].fanart + ')'; ]]]"]
+                #             blur: *plex_poster
+                #             overlay: [background: 'rgba(0, 0, 0, 0.4)']
+                #           card:
+                #             [color: '#efefef', text-shadow: '1px 1px 5px rgba(18, 22, 23, 0.9)']
+                #         tap_action:
+                #           action: none
+                #         style:
+                #           top: 50%
+                #           left: 50%
+                #           width: 100%
+                #         template: conditional_media
+
+                  #################################################
+                  #                                               #
+                  #              FIRETV              #
+                  #                                               #
+                  #################################################
+
+                  - type: conditional
+                    conditions:
+                      - entity: input_select.conditional_media
+                        state: eg_wohnzimmer_harmonyhub_firetv
+                    elements:
+                      - type: custom:button-card
+                        entity: media_player.wohnzimmer_firetv
+                        custom_fields:
+                          icon: &icon_apple_tv >
+                            <svg viewBox="0 0 50 50"><path d="M25.2 49.7l-13.7-.1c-2.4 0-4.6-.8-6.5-2.2-2-1.6-3.6-3.6-4.3-6.2-.2-1-.2-1.9-.3-3V11.5C.5 7.9 1.9 5 4.8 2.7 6.2 1.6 7.8.8 9.6.5c.5-.1.9-.1 1.4-.1L27.5.3l10.9.1c2.6 0 4.8.8 6.7 2.4 2.1 1.7 3.7 3.9 4.2 6.6l.2 2.4.1 20.5-.1 6.7c-.1 2.2-.9 4.2-2.2 5.9-1.7 2.2-4 3.8-6.8 4.4-.6.1-1.2.2-1.9.2-.1.1-13.4.2-13.4.2zm-4-27.8c-.9-1.2-2.2-1.6-3.7-1.2-.4.1-.8.2-1.2.4-.3.1-.6.1-.8 0-.4-.1-.8-.3-1.2-.4-.3-.1-.7-.1-1-.1-1.5.2-2.4 1.1-3 2.6-.4 1.1-.3 2.2 0 3.5.4 1.5 1 2.9 2.1 4 .5.6 1.2.9 2 .6 1.1-.5 2.2-.5 3.4 0 .8.3 1.5 0 2.1-.6.7-.8 1.1-1.8 1.6-2.8v-.2c-1-.6-1.7-1.4-1.8-2.7-.2-1.4.5-2.4 1.5-3.1zm9.9-1.4c.1.2.1.3.1.4l3.6 9.5c.1.3.3.4.6.4h.7c.6 0 .6 0 .9-.6l3.7-9.4c.1-.1.1-.3.2-.5H39l-2.9 8.3-3.1-8.3-1.9.2zM27.3 18l-1.3.4c-.5.2-.5.2-.6.7v1.4h-1.6l.1 1.4h1.5v5c0 .7.1 1.4.2 2.1.1.5.3 1 .8 1.4.8.6 2.6.7 3.5.2l-.1-1.2h-1.3c-.5 0-.9-.3-1-.8-.1-.3-.2-.6-.2-1v-5.8H30c0-.5.1-1 0-1.4h-2.7V18zm-8.8-.9c-1.9.3-3 2-2.7 3.2 1.4.2 2.9-1.7 2.7-3.2z"/></svg>
+                        style:
+                          top: 50%
+                          left: 50%
+                          width: 100%
+                        template: conditional_media
+
+                  #################################################
+                  #                                               #
+                  #                PRIME                #
+                  #                                               #
+                  #################################################
+
+                  - type: conditional
+                    conditions:
+                      - entity: input_select.conditional_media
+                        state: eg_wohnzimmer_harmonyhub_amazon_prime
+                    elements:
+                      - type: custom:button-card
+                        entity: media_player.wohnzimmer_tv
+                        custom_fields:
+                          icon: *icon_apple_tv
+                        style:
+                          top: 50%
+                          left: 50%
+                          width: 100%
+                        template: conditional_media
+
+                  #################################################
+                  #                                               #
+                  #                    VODAFONE                    #
+                  #                                               #
+                  #################################################
+
+                  - type: conditional
+                    conditions:
+                      - entity: input_select.conditional_media
+                        state: eg_wohnzimmer_harmonyhub_fernsehen
+                    elements:
+                      - type: custom:button-card
+                        entity: remote.eg_wohnzimmer_harmonyhub_fernsehen
+                        custom_fields:
+                          icon: &icon_spotify >
+                            <svg viewBox="0 0 50 50"><path d="M25 .3C11.4.3.3 11.4.3 25S11.4 49.7 25 49.7 49.7 38.6 49.7 25 38.6.3 25 .3zm11.3 35.6c-.4.7-1.4 1-2.1.5-5.8-3.5-13.1-4.3-21.7-2.4-.8.2-1.7-.3-1.8-1.2-.2-.8.3-1.7 1.2-1.8 9.4-2.2 17.5-1.2 24 2.8.6.5.9 1.4.4 2.1zm3.1-6.7c-.6.9-1.7 1.2-2.6.6-6.6-4.1-16.8-5.3-24.6-2.9a1.96 1.96 0 0 1-2.4-1.3 1.96 1.96 0 0 1 1.3-2.4c9-2.7 20.1-1.4 27.7 3.3.8.6 1.1 1.8.6 2.7h0zm.2-7c-8-4.7-21.1-5.2-28.7-2.9-1.2.4-2.5-.3-2.9-1.5s.3-2.5 1.5-2.9c8.7-2.6 23.2-2.1 32.4 3.3 1.1.7 1.5 2.1.8 3.2-.6 1.1-2 1.4-3.1.8h0z"/></svg>
+                        style:
+                          top: 50%
+                          left: 50%
+                          width: 100%
+                        template: conditional_media
+
+                  #################################################
+                  #                                               #
+                  #               SPOTIFY                #
+                  #                                               #
+                  #################################################
+
+                  - type: conditional
+                    conditions:
+                      - entity: input_select.conditional_media
+                        state: spotify_christoph_relxerd
+                    elements:
+                      - type: custom:button-card
+                        entity: media_player.spotify_christoph_relxerd
+                        custom_fields:
+                          icon: &icon_nest_mini >
+                            <svg viewBox="0 0 50 50"><path d="M49.7 25c0 13.6-11.1 24.7-24.8 24.7C11.3 49.7.3 38.6.3 25S11.4.3 25 .3 49.7 11.4 49.7 25zm-33.9 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3.1 2.3-.9 2.3-2.2h0zm10.8 0c0 1.2.9 2.2 2.2 2.3 1.3 0 2.3-1 2.3-2.2 0-1.3-1-2.3-2.2-2.3-1.3 0-2.3.9-2.3 2.2zm-3.2 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3 0 2.3-.9 2.3-2.2h0zm13 2.2a2.22 2.22 0 0 0 2.2-2.2c0-1.2-1-2.3-2.2-2.3a2.22 2.22 0 0 0-2.2 2.2c0 1.3 1 2.3 2.2 2.3z" /></svg>
+                        style:
+                          top: 50%
+                          left: 50%
+                          width: 100%
+                        template: conditional_media
+
+
+
+          #########################################################################
+          #                                                                       #
+          #                               * GARTEN *                              #
+          #                                                                       #
+          #########################################################################
+
+          - type: state-label
+            entity: sensor.placeholder
+            attribute: garten
+            style:
+              top: 53.4%
+              left: 50.2%
+              <<: *state-label
+
+          #################################################
+          #                                               #
+          #                    KAMERA                     #
+          #                                               #
+          #################################################
+    
+          - type: custom:button-card
+            entity: camera.garten_kamera_hof
+            name: Hof
+            show_entity_picture: false
+            show_state: false
+            style:
+              top: 64.5%
+              left: 55.18%
+              width: 10%
+            # hold_action: 
+            custom_fields:
+              picture-elements:
+                card:
+                  type: picture-glance
+                  title: Hof 
+                  tap_action: !include popup/kamera.yaml
+                  entities:
+                    - entity: binary_sensor.garten_kamera_hof_bewegung
+                  camera_image: camera.garten_kamera_hof
+            styles:
+              custom_fields:
+                picture-elements: 
+                  [top: -7%, left: -75%, width: 190%, position: absolute]
+            template: base
+
+
+
+
+          #################################################
+          #                                               #
+          #                    GARAGE                     #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: cover.garage_tor
+            style:
+              top: 64.5%
+              left: 66.14%
+              width: 10%
+            tap_action:
+              action: more-info
+            custom_fields:
+              icon_garage: >
+                [[[ if (entity.state === 'open') return '<svg id="entks3jq2knq1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"
+                shape-rendering="geometricPrecision"
+                text-rendering="geometricPrecision"><style><![CDATA[#entks3jq2knq5 {
+                animation-name: entks3jq2knq5__tt, entks3jq2knq5_c_o;
+                animation-duration: 1000ms; animation-fill-mode: forwards;
+                animation-timing-function: linear; animation-direction: reverse;
+                animation-iteration-count: 1;   }@keyframes entks3jq2knq5__tt { 0%
+                {transform: translate(0px,0px) translate(8.615000px,22.040000px)} 30%
+                {transform: translate(0px,0px) translate(8.615000px,22.540000px)} 100%
+                {transform: translate(0px,0px) translate(8.615000px,22.540000px)}
+                }@keyframes entks3jq2knq5_c_o { 0% {opacity: 0} 30% {opacity: 1} 100%
+                {opacity: 1} }#entks3jq2knq6 { animation-name: entks3jq2knq6__tt,
+                entks3jq2knq6_c_o; animation-duration: 1000ms; animation-fill-mode:
+                forwards; animation-timing-function: linear; animation-direction:
+                reverse; animation-iteration-count: 1;   }@keyframes entks3jq2knq6__tt {
+                0% {transform: translate(0px,0px) translate(8.615000px,29.460000px)} 10%
+                {transform: translate(0px,0px) translate(8.615000px,29.460000px)} 40%
+                {transform: translate(0px,0px) translate(8.615000px,29.960000px)} 100%
+                {transform: translate(0px,0px) translate(8.615000px,29.960000px)}
+                }@keyframes entks3jq2knq6_c_o { 0% {opacity: 0} 10% {opacity: 0} 40%
+                {opacity: 1} 100% {opacity: 1} }#entks3jq2knq7 { animation-name:
+                entks3jq2knq7__tt, entks3jq2knq7_c_o; animation-duration: 1000ms;
+                animation-fill-mode: forwards; animation-timing-function: linear;
+                animation-direction: reverse; animation-iteration-count: 1;  
+                }@keyframes entks3jq2knq7__tt { 0% {transform: translate(0px,0px)
+                translate(8.615000px,36.880000px)} 20% {transform: translate(0px,0px)
+                translate(8.615000px,36.880000px)} 50% {transform: translate(0px,0px)
+                translate(8.615000px,37.380000px)} 100% {transform: translate(0px,0px)
+                translate(8.615000px,37.380000px)} }@keyframes entks3jq2knq7_c_o { 0%
+                {opacity: 0} 20% {opacity: 0} 50% {opacity: 1} 100% {opacity: 1}
+                }#entks3jq2knq8 { animation-name: entks3jq2knq8__tt, entks3jq2knq8_c_o;
+                animation-duration: 1000ms; animation-fill-mode: forwards;
+                animation-timing-function: linear; animation-direction: reverse;
+                animation-iteration-count: 1;   }@keyframes entks3jq2knq8__tt { 0%
+                {transform: translate(0px,0px) translate(8.615000px,44.300000px)} 30%
+                {transform: translate(0px,0px) translate(8.615000px,44.300000px)} 60%
+                {transform: translate(0px,0px) translate(8.615000px,44.800000px)} 100%
+                {transform: translate(0px,0px) translate(8.615000px,44.800000px)}
+                }@keyframes entks3jq2knq8_c_o { 0% {opacity: 0} 30% {opacity: 0} 60%
+                {opacity: 1} 100% {opacity: 1} }#entks3jq2knq9 { animation-name:
+                entks3jq2knq9__tt, entks3jq2knq9_c_o; animation-duration: 1000ms;
+                animation-fill-mode: forwards; animation-timing-function: linear;
+                animation-direction: reverse; animation-iteration-count: 1;  
+                }@keyframes entks3jq2knq9__tt { 0% {transform: translate(0px,0px)
+                translate(8.615000px,51.730000px)} 40% {transform: translate(0px,0px)
+                translate(8.615000px,51.730000px)} 70% {transform: translate(0px,0px)
+                translate(8.615000px,52.230000px)} 100% {transform: translate(0px,0px)
+                translate(8.615000px,52.230000px)} }@keyframes entks3jq2knq9_c_o { 0%
+                {opacity: 0} 40% {opacity: 0} 70% {opacity: 1} 100% {opacity: 1}
+                }#entks3jq2knq10 { animation-name: entks3jq2knq10__tt,
+                entks3jq2knq10_c_o; animation-duration: 1000ms; animation-fill-mode:
+                forwards; animation-timing-function: linear; animation-direction:
+                reverse; animation-iteration-count: 1;   }@keyframes entks3jq2knq10__tt
+                { 0% {transform: translate(0px,0px) translate(8.615000px,59.150000px)}
+                50% {transform: translate(0px,0px) translate(8.615000px,59.150000px)}
+                80% {transform: translate(0px,0px) translate(8.615000px,59.650000px)}
+                100% {transform: translate(0px,0px) translate(8.615000px,59.650000px)}
+                }@keyframes entks3jq2knq10_c_o { 0% {opacity: 0} 50% {opacity: 0} 80%
+                {opacity: 1} 100% {opacity: 1} }]]></style><g id="entks3jq2knq2"
+                transform="matrix(0.28549000620842 0 0 0.35877102613449 0.30161800980568
+                -2.55328607559204)"><rect id="entks3jq2knq3" width="71.311996"
+                height="1.914000" rx="0" ry="0" transform="matrix(1 0 0 1
+                4.90700006484985 12.43799972534180)" fill="rgb(161,133,104)"
+                stroke="none" stroke-width="1"/><rect id="entks3jq2knq4"
+                width="71.311996" height="5.378000" rx="0" ry="0" transform="matrix(1 0
+                0 1 4.90700006484985 14.98700046539307)" fill="rgb(87,168,215)"
+                stroke="none" stroke-width="1"/><rect id="entks3jq2knq5"
+                width="64.583000" height="4.834000" rx="0" ry="0"
+                transform="translate(0,0) translate(8.615000,22.540000)"
+                fill="rgb(161,133,104)" stroke="none" stroke-width="1"/><rect
+                id="entks3jq2knq6" width="64.583000" height="4.834000" rx="0" ry="0"
+                transform="translate(0,0) translate(8.615000,29.960000)"
+                fill="rgb(161,133,104)" stroke="none" stroke-width="1"/><rect
+                id="entks3jq2knq7" width="64.583000" height="4.833000" rx="0" ry="0"
+                transform="translate(0,0) translate(8.615000,37.380000)"
+                fill="rgb(161,133,104)" stroke="none" stroke-width="1"/><rect
+                id="entks3jq2knq8" width="64.583000" height="4.834000" rx="0" ry="0"
+                transform="translate(0,0) translate(8.615000,44.800000)"
+                fill="rgb(161,133,104)" stroke="none" stroke-width="1"/><rect
+                id="entks3jq2knq9" width="64.583000" height="4.834000" rx="0" ry="0"
+                transform="translate(0,0) translate(8.615000,52.230000)"
+                fill="rgb(161,133,104)" stroke="none" stroke-width="1"
+                stroke-opacity="0"/><rect id="entks3jq2knq10" width="64.583000"
+                height="4.834000" rx="0" ry="0" transform="translate(0,0)
+                translate(8.615000,59.650000)" fill="rgb(161,133,104)" stroke="none"
+                stroke-width="1"/><rect id="entks3jq2knq11" width="2.125000"
+                height="34.525002" rx="0" ry="0" transform="matrix(1 0 0 1
+                4.90700006484985 22.53599929809570)" fill="rgb(87,168,215)"
+                stroke="none" stroke-width="1"/><polygon id="entks3jq2knq12"
+                points="6.745000,57.499000 5.169000,57.499000 4.898000,58.955000
+                7.041000,58.955000" fill="rgb(161,133,104)" stroke="none"
+                stroke-width="1"/></g></svg> ';   else return '<svg id="exm5ne46fz2e1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"
+                shape-rendering="geometricPrecision"
+                text-rendering="geometricPrecision"><style><![CDATA[#exm5ne46fz2e4
+                {animation: exm5ne46fz2e4_c_o 1000ms linear 1 normal forwards}@keyframes
+                exm5ne46fz2e4_c_o { 0% {opacity: 0.500000} 100% {opacity: 1}
+                }#exm5ne46fz2e5 { animation-name: exm5ne46fz2e5__tt, exm5ne46fz2e5_c_o;
+                animation-duration: 1000ms; animation-fill-mode: forwards;
+                animation-timing-function: linear; animation-direction: normal;
+                animation-iteration-count: 1;   }@keyframes exm5ne46fz2e5__tt { 0%
+                {transform: translate(0px,0px) translate(8.615000px,22.040000px)} 30%
+                {transform: translate(0px,0px) translate(8.615000px,22.540000px)} 100%
+                {transform: translate(0px,0px) translate(8.615000px,22.540000px)}
+                }@keyframes exm5ne46fz2e5_c_o { 0% {opacity: 0} 30% {opacity: 1} 100%
+                {opacity: 1} }#exm5ne46fz2e6 { animation-name: exm5ne46fz2e6__tt,
+                exm5ne46fz2e6_c_o; animation-duration: 1000ms; animation-fill-mode:
+                forwards; animation-timing-function: linear; animation-direction:
+                normal; animation-iteration-count: 1;   }@keyframes exm5ne46fz2e6__tt {
+                0% {transform: translate(0px,0px) translate(8.615000px,29.460000px)} 10%
+                {transform: translate(0px,0px) translate(8.615000px,29.460000px)} 40%
+                {transform: translate(0px,0px) translate(8.615000px,29.960000px)} 100%
+                {transform: translate(0px,0px) translate(8.615000px,29.960000px)}
+                }@keyframes exm5ne46fz2e6_c_o { 0% {opacity: 0} 10% {opacity: 0} 40%
+                {opacity: 1} 100% {opacity: 1} }#exm5ne46fz2e7 { animation-name:
+                exm5ne46fz2e7__tt, exm5ne46fz2e7_c_o; animation-duration: 1000ms;
+                animation-fill-mode: forwards; animation-timing-function: linear;
+                animation-direction: normal; animation-iteration-count: 1;   }@keyframes
+                exm5ne46fz2e7__tt { 0% {transform: translate(0px,0px)
+                translate(8.615000px,36.880000px)} 20% {transform: translate(0px,0px)
+                translate(8.615000px,36.880000px)} 50% {transform: translate(0px,0px)
+                translate(8.615000px,37.380000px)} 100% {transform: translate(0px,0px)
+                translate(8.615000px,37.380000px)} }@keyframes exm5ne46fz2e7_c_o { 0%
+                {opacity: 0} 20% {opacity: 0} 50% {opacity: 1} 100% {opacity: 1}
+                }#exm5ne46fz2e8 { animation-name: exm5ne46fz2e8__tt, exm5ne46fz2e8_c_o;
+                animation-duration: 1000ms; animation-fill-mode: forwards;
+                animation-timing-function: linear; animation-direction: normal;
+                animation-iteration-count: 1;   }@keyframes exm5ne46fz2e8__tt { 0%
+                {transform: translate(0px,0px) translate(8.615000px,44.300000px)} 30%
+                {transform: translate(0px,0px) translate(8.615000px,44.300000px)} 60%
+                {transform: translate(0px,0px) translate(8.615000px,44.800000px)} 100%
+                {transform: translate(0px,0px) translate(8.615000px,44.800000px)}
+                }@keyframes exm5ne46fz2e8_c_o { 0% {opacity: 0} 30% {opacity: 0} 60%
+                {opacity: 1} 100% {opacity: 1} }#exm5ne46fz2e9 { animation-name:
+                exm5ne46fz2e9__tt, exm5ne46fz2e9_c_o; animation-duration: 1000ms;
+                animation-fill-mode: forwards; animation-timing-function: linear;
+                animation-direction: normal; animation-iteration-count: 1;   }@keyframes
+                exm5ne46fz2e9__tt { 0% {transform: translate(0px,0px)
+                translate(8.615000px,51.730000px)} 40% {transform: translate(0px,0px)
+                translate(8.615000px,51.730000px)} 70% {transform: translate(0px,0px)
+                translate(8.615000px,52.230000px)} 100% {transform: translate(0px,0px)
+                translate(8.615000px,52.230000px)} }@keyframes exm5ne46fz2e9_c_o { 0%
+                {opacity: 0} 40% {opacity: 0} 70% {opacity: 1} 100% {opacity: 1}
+                }#exm5ne46fz2e10 { animation-name: exm5ne46fz2e10__tt,
+                exm5ne46fz2e10_c_o; animation-duration: 1000ms; animation-fill-mode:
+                forwards; animation-timing-function: linear; animation-direction:
+                normal; animation-iteration-count: 1;   }@keyframes exm5ne46fz2e10__tt {
+                0% {transform: translate(0px,0px) translate(8.615000px,59.150000px)} 50%
+                {transform: translate(0px,0px) translate(8.615000px,59.150000px)} 80%
+                {transform: translate(0px,0px) translate(8.615000px,59.650000px)} 100%
+                {transform: translate(0px,0px) translate(8.615000px,59.650000px)}
+                }@keyframes exm5ne46fz2e10_c_o { 0% {opacity: 0} 50% {opacity: 0} 80%
+                {opacity: 1} 100% {opacity: 1} }#exm5ne46fz2e11 {animation:
+                exm5ne46fz2e11_c_o 1000ms linear 1 normal forwards}@keyframes
+                exm5ne46fz2e11_c_o { 0% {opacity: 0.500000} 100% {opacity: 1}
+                }]]></style><g id="exm5ne46fz2e2" transform="matrix(0.28549000620842 0 0
+                0.35877102613449 0.30161800980568 -2.55328607559204)"><rect
+                id="exm5ne46fz2e3" width="71.311996" height="1.914000" rx="0" ry="0"
+                transform="matrix(1 0 0 1 4.90700006484985 12.43799972534180)"
+                fill="rgb(95,98,103)" stroke="none" stroke-width="1"/><rect
+                id="exm5ne46fz2e4" width="71.311996" height="5.378000" rx="0" ry="0"
+                transform="matrix(1 0 0 1 4.90700006484985 14.98700046539307)"
+                opacity="0.5" fill="rgb(158,160,162)" stroke="none"
+                stroke-width="1"/><rect id="exm5ne46fz2e5" width="64.583000"
+                height="4.834000" rx="0" ry="0" transform="translate(0,0)
+                translate(8.615000,22.040000)" opacity="0" fill="rgb(95,98,103)"
+                stroke="none" stroke-width="1"/><rect id="exm5ne46fz2e6"
+                width="64.583000" height="4.834000" rx="0" ry="0"
+                transform="translate(0,0) translate(8.615000,29.460000)" opacity="0"
+                fill="rgb(95,98,103)" stroke="none" stroke-width="1"/><rect
+                id="exm5ne46fz2e7" width="64.583000" height="4.833000" rx="0" ry="0"
+                transform="translate(0,0) translate(8.615000,36.880000)" opacity="0"
+                fill="rgb(95,98,103)" stroke="none" stroke-width="1"/><rect
+                id="exm5ne46fz2e8" width="64.583000" height="4.834000" rx="0" ry="0"
+                transform="translate(0,0) translate(8.615000,44.300000)" opacity="0"
+                fill="rgb(95,98,103)" stroke="none" stroke-width="1"/><rect
+                id="exm5ne46fz2e9" width="64.583000" height="4.834000" rx="0" ry="0"
+                transform="translate(0,0) translate(8.615000,51.730000)" opacity="0"
+                fill="rgb(95,98,103)" stroke="none" stroke-width="1"
+                stroke-opacity="0"/><rect id="exm5ne46fz2e10" width="64.583000"
+                height="4.834000" rx="0" ry="0" transform="translate(0,0)
+                translate(8.615000,59.150000)" opacity="0" fill="rgb(95,98,103)"
+                stroke="none" stroke-width="1"/><rect id="exm5ne46fz2e11"
+                width="2.125000" height="34.525002" rx="0" ry="0" transform="matrix(1 0
+                0 1 4.90700006484985 22.53599929809570)" opacity="0.5"
+                fill="rgb(158,160,162)" stroke="none" stroke-width="1"/><polygon
+                id="exm5ne46fz2e12" points="6.745000,57.499000 5.169000,57.499000
+                4.898000,58.955000 7.041000,58.955000" fill="rgb(95,98,103)"
+                stroke="none" stroke-width="1"/></g></svg>'; ]]]
+            styles:
+              custom_fields:
+                icon_garage:
+                  [top: 9%, left: 10%, width: 3vw, position: absolute]
+            template: base
+  
+          #################################################
+          #                                               #
+          #                    ABFALL                     #
+          #                                               #
+          #################################################
+    
+          - type: custom:button-card
+            template: ['abfall']
+            entity: calendar.abfallkalender
+            name: Abfall
+            styles:
+              icon:
+                - top: -25%
+                - left: 3%
+                - width: 35%
+            style:
+              top: 82.1%
+              left: 55.18%
+              width: 10%
+  
+          #################################################
+          #                                               #
+          #                  GARAGENLICHT                 #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: switch.garage_licht
+            style:
+              top: 82.1%
+              left: 66.14%
+              width: 10%
+            custom_fields:
+              icon_spot: *icon_spot
+            styles: *icon_spot_styles
+            template: light
+
+          ##########################################################################
+          #                                                                        #
+          #                               * BEWOHNER *                                #
+          #                                                                        #
+          ##########################################################################
+
+          - type: state-label
+            entity: sensor.placeholder
+            attribute: bewohner
+            style:
+              top: 53.4%
+              left: 75.1%
+              <<: *state-label
+
+          #################################################
+          #                                               #
+          #                    CHRISTOPH                  #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: person.christoph
+            triggers_update:
+              ['person.christoph', 'sensor.time']
+            style:
+              top: 64.5%
+              left: 80.05%
+              width: 10%
+            tap_action: !include popup/christoph.yaml
+            hold_action: !include popup/christoph.yaml
+            template: person
+       
+          #################################################
+          #                                               #
+          #                     FRANZI                    #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: person.franziska
+            triggers_update:
+              ['person.franziska', 'sensor.time']
+            style:
+              top: 64.5%
+              left: 91.05%
+              width: 10%
+            tap_action: !include popup/hemma_sanja.yaml
+            hold_action: !include popup/hemma_sanja.yaml
+            template: person
+
+          #################################################
+          #                                               #
+          #           BEWOHNER UNTEN LINKS                #
+          #                                               #
+          #################################################
+
+          - type: custom:button-card
+            entity: input_select.waschmaschinenstatus   
+            name: Waschmaschine
+            show_state: true
+            style:
+              top: 82.1%
+              left: 80.05%
+              width: 10%
+            state:
+              - value: 'Läuft'
+                styles:
+                  card: [background-color: 'rgba(255, 255, 255, 0.8)']
+                  name: [color: 'rgba(0, 0, 0, 0.6)']
+                  state: [color: 'rgba(0, 0, 0, 0.6)']
+              - value: 'Finishing'
+                styles:
+                  card: [background-color: 'rgba(229, 154, 24, 0.8)']
+                  name: [color: 'rgba(0, 0, 0, 0.6)']
+                  state: [color: 'rgba(0, 0, 0, 0.6)']
+              - value: 'Fertig'
+                styles:
+                  card: [background-color: 'rgba(46, 198, 61, 0.8)']
+                  name: [color: 'rgba(0, 0, 0, 0.6)']
+                  state: [color: 'rgba(0, 0, 0, 0.6)']
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            custom_fields:
+              icon: >
+                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                     viewBox="0 0 424.166 424.166" style="enable-background:new 0 0 424.166 424.166;" xml:space="preserve">
+                <g>
+                    <path d="M360.083,0h-296c-17.645,0-32,14.355-32,32v384.166c0,4.418,3.582,8,8,8h344c4.418,0,8-3.582,8-8V32 C392.083,14.355,377.728,0,360.083,0z M48.083,408.166V80H320.25c4.418,0,8-3.582,8-8s-3.582-8-8-8H48.083V32 c0-8.822,7.178-16,16-16h296c8.822,0,16,7.178,16,16v32h-23.75c-4.418,0-8,3.582-8,8s3.582,8,8,8h23.75v328.166H48.083z"/>
+                    <path d="M212.083,112.005c-72.966,0-132.329,59.362-132.329,132.328s59.362,132.328,132.329,132.328 c72.966,0,132.328-59.362,132.328-132.328S285.049,112.005,212.083,112.005z M212.083,360.661 c-64.144,0-116.329-52.185-116.329-116.328s52.185-116.328,116.329-116.328c48.707,0,90.511,30.094,107.815,72.661h-7.315 c-3.419,0-6.712,0.545-9.803,1.542c-16.255-34.945-51.646-57.87-90.697-57.87c-55.138,0-99.995,44.857-99.995,99.995 s44.857,99.995,99.995,99.995c39.052,0,74.442-22.925,90.697-57.87c3.091,0.997,6.384,1.542,9.803,1.542h7.315 C302.594,330.567,260.79,360.661,212.083,360.661z M303.671,269.28c-0.152-0.123-0.311-0.239-0.473-0.35 c-3.999-2.911-6.614-7.615-6.614-12.93v-23.334c0-5.314,2.615-10.018,6.614-12.93c0.162-0.112,0.321-0.228,0.473-0.35 c2.549-1.716,5.615-2.72,8.912-2.72h12.495c2.172,8.871,3.333,18.135,3.333,27.667s-1.161,18.796-3.333,27.667h-12.495 C309.286,272,306.219,270.996,303.671,269.28z M289.15,277.761c-13.224,30.451-43.539,50.567-77.067,50.567 c-46.315,0-83.995-37.68-83.995-83.995s37.68-83.995,83.995-83.995c33.528,0,63.843,20.116,77.067,50.567 c-5.311,5.715-8.567,13.363-8.567,21.761V256C280.583,264.398,283.839,272.046,289.15,277.761z"/>
+                    <path d="M344.083,40.083c0-8.776-7.141-15.917-15.917-15.917s-15.916,7.141-15.916,15.917S319.39,56,328.166,56 S344.083,48.859,344.083,40.083z"/>
+                    <path d="M280.5,24.166c-8.776,0-15.917,7.141-15.917,15.917S271.724,56,280.5,56s15.916-7.141,15.916-15.917 S289.276,24.166,280.5,24.166z"/>
+                    <path d="M152.416,32.083h-72c-4.418,0-8,3.582-8,8s3.582,8,8,8h72c4.418,0,8-3.582,8-8S156.834,32.083,152.416,32.083z"/>
+                    <path d="M199.75,32.083h-15.417c-4.418,0-8,3.582-8,8s3.582,8,8,8h15.417c4.418,0,8-3.582,8-8S204.168,32.083,199.75,32.083z"/>
+                    <path d="M212.083,176.005c-37.677,0-68.329,30.652-68.329,68.328c0,4.418,3.582,8,8,8s8-3.582,8-8 c0-28.854,23.475-52.328,52.329-52.328c4.418,0,8-3.582,8-8S216.501,176.005,212.083,176.005z"/>
+                </g>
+            styles:
+              card: [transition: all 0.3s ease-out]
+              custom_fields:
+                icon:
+                  [top: 10%, left: 10.1%, width: 3.1vw, position: absolute,
+                  fill: "[[[ return entity.state === 'on' ? '#516d82' : '#9da0a2'; ]]]"]
+            template: base
+
+          #################################################
+          #                                               #
+          #           BEWOHNER UNTEN RECHTS               #
+          #                                               #
+          #################################################
+   
+          - type: custom:button-card
+            entity: input_select.trocknerstatus   
+            name: Trockner
+            show_state: true
+            style:
+              top: 82.1%
+              left: 91.05%
+              width: 10%
+            state:
+              - value: 'Läuft'
+                styles:
+                  card: [background-color: 'rgba(255, 255, 255, 0.8)']
+                  name: [color: 'rgba(0, 0, 0, 0.6)']
+                  state: [color: 'rgba(0, 0, 0, 0.6)']
+              - value: 'Finishing'
+                styles:
+                  card: [background-color: 'rgba(229, 154, 24, 0.8)']
+                  name: [color: 'rgba(0, 0, 0, 0.6)']
+                  state: [color: 'rgba(0, 0, 0, 0.6)']
+              - value: 'Fertig'
+                styles:
+                  card: [background-color: 'rgba(46, 198, 61, 0.8)']
+                  name: [color: 'rgba(0, 0, 0, 0.6)']
+                  state: [color: 'rgba(0, 0, 0, 0.6)']
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            custom_fields:
+              icon: >
+                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                     viewBox="0 0 44.143 44.143" style="enable-background:new 0 0 44.143 44.143;" xml:space="preserve">
+                <g>
+                    <g>
+                        <path d="M40.726,0.176H3.416C1.532,0.176,0,1.708,0,3.592V40.55c0,1.885,1.532,3.416,3.416,3.416h37.311
+                            c1.884,0,3.416-1.531,3.416-3.416V3.592C44.142,1.708,42.61,0.176,40.726,0.176z M2,3.592C2,2.81,2.635,2.175,3.416,2.175h12.018
+                            C9.025,4.319,3.982,9.463,2,15.943V3.592z M3.416,41.967C2.635,41.967,2,41.331,2,40.549v-12.35
+                            c1.982,6.479,7.025,11.623,13.434,13.768C15.434,41.967,3.416,41.967,3.416,41.967z M3.082,22.071
+                            c0-10.47,8.518-18.988,18.99-18.988c10.471,0,18.988,8.519,18.988,18.988s-8.52,18.988-18.988,18.988
+                            C11.6,41.059,3.082,32.542,3.082,22.071z M42.142,40.551c0,0.78-0.635,1.416-1.416,1.416H28.709
+                            c6.408-2.145,11.451-7.287,13.434-13.768L42.142,40.551L42.142,40.551z M42.142,15.943C40.16,9.464,35.117,4.32,28.707,2.176
+                            h12.019c0.781-0.001,1.416,0.634,1.416,1.416V15.943z"/>
+                        <circle cx="17.01" cy="22.071" r="3"/>
+                        <circle cx="27.133" cy="22.071" r="3"/>
+                    </g>
+                </g>
+            styles:
+              card: [transition: all 0.3s ease-out]
+              custom_fields:
+                icon:
+                  [top: 10%, left: 10.1%, width: 3.1vw, position: absolute,
+                  fill: "[[[ return entity.state === 'on' ? '#516d82' : '#9da0a2'; ]]]"]
+            template: base
+             

@@ -1,0 +1,11 @@
+broker: core-mosquitto
+username: Christoph
+password: !secret mqtt_password
+discovery: false
+discovery_prefix: homeassistant
+birth_message:
+    topic: 'hass/status'
+    payload: 'mqtt online'
+will_message:
+    topic: 'hass/status'
+    payload: 'mqtt offline'

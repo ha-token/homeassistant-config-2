@@ -1,0 +1,62 @@
+- id: '1576337038297'
+  name: Weihnachten
+  entities:
+    light.wohnzimmer_licht_weihnachtsbaum:
+      friendly_name: wohnzimmer_licht_weihnachtsbaum
+      supported_features: 0
+      icon: mdi:pine-tree
+      state: 'on'
+- id: '1595788552367'
+  name: Fernsehen
+  entities:
+    light.egwohnzimmerstehlampe_1:
+      min_mireds: 153
+      max_mireds: 500
+      brightness: 120
+      color_temp: 153
+      friendly_name: EG/Wohnzimmer/Stehlampe1
+      supported_features: 3
+      state: 'on'
+    light.egwohnzimmerstehlampe_2:
+      min_mireds: 153
+      max_mireds: 500
+      brightness: 117
+      color_temp: 153
+      friendly_name: EG/Wohnzimmer/Stehlampe2
+      supported_features: 3
+      state: 'on'
+    light.wohnzimmer_licht:
+      brightness: 99
+      linkquality: 60
+      state: 'on'
+      friendly_name: wohnzimmer_licht
+      supported_features: 41
+    light.fgrgbwm441_rgbw_controller_instance_6_level:
+      brightness: 70
+      node_id: 8
+      friendly_name: 'FGRGBWM441 RGBW Controller: Instance 6: Level'
+      supported_features: 1
+      state: 'on'
+- id: '1609586786675'
+  name: Kino
+  entities:
+    light.wohnzimmer_licht:
+      effect_list:
+      - blink
+      - breathe
+      - okay
+      - channel_change
+      - finish_effect
+      - stop_effect
+      brightness: 20
+      linkquality: 13
+      state: 'on'
+      friendly_name: wohnzimmer_licht
+      supported_features: 45
+    light.wohnzimmer_licht_tv:
+      node_id: 8
+      friendly_name: wohnzimmer_licht_tv
+      supported_features: 1
+      icon: mdi:led-strip
+      state: 'off'
+  icon: mdi:theater

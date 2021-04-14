@@ -1,0 +1,20 @@
+######################################
+#                                    #
+#               Groups               #
+#                                    #
+######################################
+haus:
+  name: Haus
+  icon: mdi:home-assistant    
+  entities:
+    - input_boolean.christoph_zuhause
+    - input_boolean.franziska_zuhause
+
+Ferien_und_Feiertage:
+  name: Ferien und Feiertage
+  icon: mdi:calendar-star
+  entities:
+    - calendar.ferien_bayern
+    - calendar.feiertage_baden_wurttemberg
+    - calendar.feiertage_bayern
+    - calendar.urlaub_christoph
