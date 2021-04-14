@@ -1,7 +1,7 @@
 ##################
 # Lüftung im Bad #
 ##################
-
+ 
  ## Lüftung nötig ## -----------------------------------------------------------
   - alias: bad_lueftung_noetig
     id: bad_lueftung_noetig
