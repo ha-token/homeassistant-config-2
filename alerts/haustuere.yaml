@@ -1,0 +1,9 @@
+name: "Haustüre ist geöffnet!"
+done_message: "Haustüre wurde geschlossen"
+entity_id: binary_sensor.flur_haustuere_tuersensor_contact
+state: "on"
+skip_first: true
+repeat: 5
+notifiers:
+  - alexa_media_uberall
+  - mobile_app_mi_9_se_ha_app

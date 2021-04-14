@@ -1,0 +1,7 @@
+name: "Rauchmelder im Flur DG meldet Rauch"
+done_message: "Rauch hat sich verzogen"
+entity_id: binary_sensor.dgflurrauchmelder_sensor
+repeat: 1
+notifiers:
+  - alexa_media_uberall
+  - mobile_app_mi_9_se_ha_app

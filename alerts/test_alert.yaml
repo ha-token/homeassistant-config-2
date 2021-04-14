@@ -1,0 +1,7 @@
+name: "Dies ist ein Test für Alerts"
+done_message: "Der Tester wurde wieder ausgeschalten"
+entity_id: input_boolean.tester
+repeat: 1
+notifiers:
+  - notify.alexa_media_uberall
+  - mobile_app_mi_9_se_ha_app
