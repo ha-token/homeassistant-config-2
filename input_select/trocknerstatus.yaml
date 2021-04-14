@@ -1,0 +1,7 @@
+name: Trocknerstatus
+options:
+  - Idle
+  - Läuft
+  - Finishing
+  - Fertig
+initial: Idle

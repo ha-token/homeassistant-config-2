@@ -1,0 +1,50 @@
+platform: netdata
+host: 192.168.178.12
+port: 19999
+name: netdata_raspi2
+resources:
+  load15:
+    data_group: system.load
+    element: load15
+    icon: mdi:chip
+  load5:
+    data_group: system.load
+    element: load5
+    icon: mdi:chip
+  load1:
+    data_group: system.load
+    element: load1
+    icon: mdi:chip
+  cpu_temperature:
+    data_group: sensors.cpu_thermal-virtual-0_temperature
+    element: cpu_thermal-virtual-0_temp1
+  network_recieved:
+    data_group: net.eth0
+    element: received
+    icon: mdi:arrow-down-bold-circle-outline
+  network_sent:
+    data_group: net.eth0
+    element: sent
+    icon: mdi:arrow-up-bold-circle-outline
+  memory_free:
+    data_group: system.ram
+    element: free
+  memory_used:
+    data_group: system.ram
+    element: used
+  memory_cached:
+    data_group: system.ram
+    element: cached
+  disk_read:
+    data_group: system.io
+    element: in
+  disk_write: 
+    data_group: system.io
+    element: out
+  disk_read_mariadb:
+    data_group: cgroup_mariadb.throttle_io
+    element: read
+  disk_write_mariadb:
+    data_group: cgroup_mariadb.throttle_io
+    element: write
+

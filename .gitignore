@@ -6,7 +6,7 @@
 !.gitignore
 #!*.md
 !configuration.yaml
-!custom_components/
+
 
 # Ignore folders.
 .storage

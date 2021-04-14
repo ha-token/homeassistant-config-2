@@ -1,0 +1,5 @@
+platform: template
+sensors:
+  waschmaschine_status:
+    value_template: '{{ states.input_select.waschmaschinenstatus.state}}'
+    friendly_name: 'Waschmaschine'

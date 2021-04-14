@@ -1,0 +1,28 @@
+
+input_boolean:
+
+  ####################################################
+  #                                                  #
+  #                     BOOLEAN                      #
+  #                                                  #
+  ####################################################
+
+  eg_wohnzimmer_harmonyhub:
+    initial: off
+
+input_select:
+
+  ####################################################
+  #                                                  #
+  #                      SELECT                      #
+  #                                                  #
+  ####################################################
+
+  conditional_media:
+    initial: Zuletzt heruntergeladen
+    options:
+      ['Zuletzt heruntergeladen', 'eg_wohnzimmer_harmonyhub_amazon_prime', 
+       'spotify_christoph_relxerd', 'eg_wohnzimmer_harmonyhub_ambient', 
+       'eg_wohnzimmer_harmonyhub_fernsehen', 'eg_wohnzimmer_harmonyhub_firetv', 
+       'eg_wohnzimmer_harmonyhub_smarttv']
+

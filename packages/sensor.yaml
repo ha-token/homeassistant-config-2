@@ -1,0 +1,209 @@
+
+binary_sensor:
+
+    ####################################################
+    #                                                  #
+    #                      BINARY                      #
+    #                                                  #
+    ####################################################
+
+  - platform: ping
+    name: nas_internet_access
+    host: 8.8.8.8
+
+sensor:
+
+    ####################################################
+    #                                                  #
+    #                     SENSORS                      #
+    #                                                  #
+    ####################################################
+
+  - platform: version
+    name: hass_version_installed
+
+  - platform: version
+    name: hass_version_latest
+    source: docker
+
+  - platform: version
+    name: hass_version_latest_beta
+    beta: true
+    source: docker
+
+  - platform: uptime
+
+  - platform: time_date
+    display_options:
+      ['time', 'date']
+
+  - platform: rest
+    name: hass_release_notes
+    resource: https://api.github.com/repos/home-assistant/core/releases/latest
+    value_template: '{{ value_json.name }}'
+    json_attributes: [body]
+    scan_interval: 21600
+
+  - platform: rest
+    name: hass_release_notes_rc
+    resource: https://api.github.com/repos/home-assistant/core/releases?per_page=1
+    value_template: '{{ value_json[0].name }}'
+    json_attributes: [body]
+    scan_interval: 21600
+
+  - platform: dnsip
+  
+  - platform: filesize
+    file_paths:
+      - /config/home-assistant.log
+      
+  - platform: rest
+    name: fullykiosk
+    json_attributes:
+      ['internalStorageFreeSpace', 'internalStorageTotalSpace', 
+      'ramFreeMemory', 'ramTotalMemory']
+    resource: !secret fullykiosk_rest_resource
+    value_template: '{{ value_json.screenOn }}'
+    scan_interval: 900
+
+
+    ####################################################
+    #                                                  #
+    #                   COMMAND LINE                   #
+    #                                                  #
+    ####################################################
+
+  - platform: command_line
+    name: hacs_version
+    scan_interval: 86400
+    command: grep -oP 'INTEGRATION_VERSION = "\K[^"]+' custom_components/hacs/const.py
+
+    ####################################################
+    #                                                  #
+    #                     TEMPLATE                     #
+    #                                                  #
+    ####################################################
+
+  - platform: template
+    sensors:
+      sidebar_greeting:
+        value_template: >
+          {% set time = now().hour %}
+          {% if time <= 1 %} Gute Nacht {{'\U0001F611'}}
+          {% elif time <= 3 %} Gute Nacht {{'\U0001F62A'}}
+          {% elif time <= 5 %} Gute Nacht {{'\U0001F634'}}
+          {% elif time <= 7 %} Guten Morgen {{'\U0001F4A9'}}
+          {% elif time <= 9 %} Guten Morgen {{'\u2615\uFE0F'}}
+          {% elif time <= 10 %} Guten Morgen {{'\U0001F642'}}
+          {% elif time <= 13 %} Guten Tag {{'\U0001F60A'}}
+          {% elif time <= 15 %} Guten Tag {{'\U0001F60E'}}
+          {% elif time <= 17 %} Guten Tag {{'\U0001F44B\U0001F3FB'}}
+          {% elif time <= 19 %} Guten Abend {{'\U0001F44B\U0001F3FB'}}
+          {% elif time <= 22 %} Guten Abend {{'\U0001F60C'}}
+          {% elif time <= 23 %} Guten Abend {{'\U0001F974'}}
+          {% else %} Guten Abend {{'\U0001F974'}}
+          {% endif %}
+
+      placeholder:
+        value_template: ' '
+        attribute_templates:
+          wohnzimmer: Wohnzimmer
+          essen: Essen
+          bad: Bad
+          media: Media
+          garten: Garten
+          bewohner: Bewohner
+
+
+      hass_version:
+        icon_template: mdi:home-assistant
+        friendly_name_template: >
+          Installiert {{ states('sensor.hass_version_installed') }}
+        value_template: >
+          {{ 'Neuste' if states('sensor.hass_version_installed') == 
+          states('sensor.hass_version_latest') else states('sensor.hass_version_latest') }}
+
+      hass_dev_release:
+        icon_template: mdi:dev-to
+        friendly_name: Nächstes Release
+        value_template: >
+          {% set dev = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
+          'start_time')) - as_timestamp(now())) / 86400) %}
+          {% if dev < -1 %} Freigegeben
+          {% elif dev < 0 %} Heute
+          {% elif dev < 1 %} Morgen
+          {% elif dev > 35 %} Nein
+          {% else %} in {{ dev | int + 1 }} Tagen
+          {% endif %}
+
+
+    ####################################################
+    #                                                  #
+    #                      DATE                        #
+    #                                                  #
+    ####################################################
+
+      sidebar_day:
+        icon_template: mdi:calendar
+        value_template: >
+          {% set days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'] %}
+          {{ days[now().weekday()] }}
+
+      sidebar_date:
+        icon_template: mdi:calendar
+        value_template: >
+          {% set months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
+          'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'] %}
+          {{ strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ months[now().month-1] }}
+
+      hass_uptime:
+        friendly_name: Letzter Neustart
+        icon_template: mdi:update
+        value_template: >
+          {% set uptime = (as_timestamp(now()) - as_timestamp(states('sensor.uptime'))) | float / 60 %}
+          Vor {% if uptime < 1 %} {{ (uptime * 60) | int }} Sekunden 
+          {% elif uptime | int == 1 %} Minute
+          {% elif uptime | int > 1 %}
+            {% if uptime | int < 60 %} {{ uptime | int }} Minuten
+            {% elif uptime | int / 60 == 24 %} {{ (uptime | int / 60 / 24) | int }} Tag
+            {% elif uptime | int / 60 >= 24 %} {{ (uptime | int / 60 / 24) | int }} Tagen
+            {% elif uptime | int >= 60 and uptime | int < 120 %} {{ (uptime | int / 60) | int }} Stunde
+            {% elif uptime | int >= 120 %} {{ (uptime | int / 60) | int }} Stunden
+            {% endif %}
+          {% endif %}
+          
+
+    ####################################################
+    #                                                  #
+    #                      TABLET                      #
+    #                                                  #
+    ####################################################
+
+      fullykiosk_storage:
+        friendly_name: Storage
+        icon_template: mdi:sd
+        unit_of_measurement: '%'
+        value_template: >
+          {% set entity_id = 'sensor.fullykiosk' %}
+          {% set FreeSpace = state_attr(entity_id, 'internalStorageFreeSpace') %}
+          {% set TotalSpace = state_attr(entity_id, 'internalStorageTotalSpace') %}
+          {% if not (FreeSpace == None or TotalSpace == None) %}
+            {{ 100 - (FreeSpace / TotalSpace * 100) | int }}
+          {% endif %}
+      fullykiosk_memory:
+        friendly_name: Memory
+        icon_template: mdi:memory
+        unit_of_measurement: '%'
+        value_template: >
+          {% set entity_id = 'sensor.fullykiosk' %}
+          {% set FreeMemory = state_attr(entity_id, 'ramFreeMemory') %}
+          {% set TotalMemory = state_attr(entity_id, 'ramTotalMemory') %}
+          {% if not (FreeMemory == None or TotalMemory == None) %}
+            {{ 100 - (FreeMemory / TotalMemory * 100) | int }}
+          {% endif %}
+      fullykiosk_last_app_start:
+        friendly_name: Last App Start
+        icon_template: mdi:update
+        device_class: timestamp
+        value_template: >
+          {{ states('sensor.dashboard_last_app_start') | replace(' ','T') }}

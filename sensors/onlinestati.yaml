@@ -1,0 +1,45 @@
+platform: template
+sensors:
+##usg----------------------------------------------------------------------
+  rack_usg:
+    friendly_name: 'USG Onlinestatus'
+    icon_template: >-
+      {% if is_state("device_tracker.werkstatt_usg", "home") %}mdi:lan-connect{% else %}mdi:lan-disconnect{% endif %}
+    value_template: >-
+      {% if is_state("device_tracker.werkstatt_usg", "home") %}Online{% else %}Offline{% endif %}
+##raspi2----------------------------------------------------------------------
+  rack_raspi2:
+    friendly_name: 'raspi2 Onlinestatus'
+    icon_template: >-
+      {% if is_state("device_tracker.rack_raspi2", "home") %}mdi:lan-connect{% else %}mdi:lan-disconnect{% endif %}
+    value_template: >-
+      {% if is_state("device_tracker.rack_raspi2", "home") %}Online{% else %}Offline{% endif %}
+##flur_ap_og----------------------------------------------------------------------
+  flur_ap_og:
+    friendly_name: 'flur_ap_og Onlinestatus'
+    icon_template: >-
+      {% if is_state("device_tracker.flur_ap_og", "home") %}mdi:lan-connect{% else %}mdi:lan-disconnect{% endif %}
+    value_template: >-
+      {% if is_state("device_tracker.flur_ap_og", "home") %}Online{% else %}Offline{% endif %}
+##flur_ap_ug----------------------------------------------------------------------
+  flur_ap_ug:
+    friendly_name: 'flur_ap_ug Onlinestatus'
+    icon_template: >-
+      {% if is_state("device_tracker.flur_ap_ug", "home") %}mdi:lan-connect{% else %}mdi:lan-disconnect{% endif %}
+    value_template: >-
+      {% if is_state("device_tracker.flur_ap_ug", "home") %}Online{% else %}Offline{% endif %}
+##wohnzimmer_ap----------------------------------------------------------------------
+  wohnzimmer_ap:
+    friendly_name: 'wohnzimmer_ap Onlinestatus'
+    icon_template: >-
+      {% if is_state("device_tracker.wohnzimmer_ap", "home") %}mdi:lan-connect{% else %}mdi:lan-disconnect{% endif %}
+    value_template: >-
+      {% if is_state("device_tracker.wohnzimmer_ap", "home") %}Online{% else %}Offline{% endif %}
+##christoph_handy
+  christoph_handy:
+    friendly_name: 'christoph_handy Onlinestatus'
+    icon_template: >-
+      {% if is_state("device_tracker.christoph_handy", "home") %}mdi:wifi{% else %}mdi:signal-4g{% endif %}
+    value_template: >-
+      {% if is_state("device_tracker.christoph_handy", "home") %}Lan Solo{% else %}Mobilfunk{% endif %}
+

@@ -1,0 +1,6 @@
+platform: template
+sensors:
+  rack_usg_wan_in_mbps:
+    value_template:  "{{ ((states('sensor.wan_in_usg_derivative')|float*8)/1000000)|round(2) }}"
+    unit_of_measurement: 'Mbit/s'
+    friendly_name: rack_usg_wan_in_mbps

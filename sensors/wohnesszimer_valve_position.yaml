@@ -1,0 +1,10 @@
+platform: template
+sensors:
+  wohnesszimmer_valve_position:
+    friendly_name: 'wohnesszimmer_valve_position'
+    value_template: >
+      {{ ((float(state_attr('climate.wohnzimmer_heizung_links', 'valve_position')| replace(" %", "") | int) +
+       float(state_attr('climate.wohnzimmer_heizung_rechts', 'valve_position')| replace(" %", "") | int) +
+       float(state_attr('climate.esszimmer_heizung_links', 'valve_position')| replace(" %", "") | int) +
+       float(state_attr('climate.esszimmer_heizung_rechts', 'valve_position')| replace(" %", "") | int)) / 4) | round(0)
+      }}

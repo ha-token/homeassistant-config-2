@@ -1,0 +1,197 @@
+
+script:
+
+  ####################################################
+  #                                                  #
+  #                     SCRIPTS                      #
+  #                                                  #
+  ####################################################
+
+  monitors_mute:
+    sequence:
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.monitors_mute_check
+              state: 'off'
+          sequence:
+            - service: shell_command.monitors_mute_on
+        default:
+          - service: shell_command.monitors_mute_off
+      - delay:
+          milliseconds: 300
+      - service: homeassistant.update_entity
+        entity_id: binary_sensor.monitors_mute_check
+
+  zoned_cleanup:
+    sequence:
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.roborock_zone
+            state: Ingen vald
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.rockrobo
+          command: zoned_cleanup
+          params:
+            zone_ids: ["{{ states('input_select.roborock_zone') }}"]
+
+  samsung_tv_energy_saving:
+    alias: Eko-läge
+    icon: mdi:leaf
+    sequence:
+      - service: browser_mod.toast
+        data:
+          duration: 8000
+          message: Ställer in eko-läge på Tv i sovrummet...
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
+          delay_secs: 1.5
+          device: samsung_tv
+          command:
+            ['exit_15', 'settings_1', 'down_2', 'down_2' , 'down_2', 'enter_5', 'down_2', 'down_2', 'down_2', 
+            'down_2', 'enter_5', 'enter_5', 'down_2', 'down_2', 'enter_5', 'exit_15', 'exit_15']
+
+  mattias_find_my_iphone:
+    sequence:
+      - repeat:
+          count: 3
+          sequence:
+            - service: notify.mobile_app_iphone
+              data:
+                title: Hitta min iPhone
+                message: Här är jag
+                data:
+                  push:
+                    sound:
+                      name: Ringtone_UK_Haptic.caf
+                      critical: 1
+                      volume: 1.0
+            - delay:
+                seconds: 4
+
+  sanja_find_my_iphone:
+    sequence:
+      - repeat:
+          count: 3
+          sequence:
+            - service: notify.mobile_app_sanja_iphone
+              data:
+                title: Hitta min iPhone
+                message: Här är jag
+                data:
+                  push:
+                    sound:
+                      name: Ringtone_UK_Haptic.caf
+                      critical: 1
+                      volume: 1.0
+            - delay:
+                seconds: 4
+
+  ####################################################
+  #                                                  #
+  #               HOME ARRIVE / LEAVE                #
+  #                                                  #
+  ####################################################
+
+  home_arrive:
+    alias: Hemma
+    sequence:
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: switch.fullykiosk_screen
+              state: 'on'
+            - condition: state
+              entity_id: switch.fullykiosk_screensaver
+              state: 'off'
+          sequence:
+            - service: tts.cloud_say
+              data:
+                entity_id: media_player.tablet
+                message: >
+                  {{ ['Hej', 'Startar', 'Värmer upp', 'Välkommen hem'] | random }}
+                language: sv-SE
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: sun.sun
+              state: below_horizon
+          sequence:
+            - service: scene.turn_on
+              data:
+                entity_id: scene.hemma_below_horizon
+        default:
+          - service: scene.turn_on
+            data:
+              entity_id: scene.hemma_above_horizon
+      - delay:
+          seconds: 4
+
+  home_leave:
+    alias: Stäng allt
+    sequence:
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: switch.fullykiosk_screen
+              state: 'on'
+            - condition: state
+              entity_id: switch.fullykiosk_screensaver
+              state: 'off'
+          sequence:
+            - service: tts.cloud_say
+              data:
+                entity_id: media_player.tablet
+                message: >
+                  {{ ['Ha det bra', 'Saknar dig redan', 'Hej då', 'Stänger ner allt'] | random }}
+                language: sv-SE
+      - service: light.turn_off
+        entity_id: light.all_lights_exclude_hall
+      - service: switch.turn_off
+        entity_id:
+          ['switch.wemo_fan', 'switch.wemo_monitors']
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: switch.wol_imac
+              state: 'on'
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.computer_imac
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: media_player.sony_bravia
+              state: 'on'
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.tv_sony
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: media_player.samsung_tv_remote
+              state: 'on'
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.tv_samsung
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.gosund_fan
+              state: 'on'
+          sequence:
+            - service: fan.turn_off
+              entity_id: fan.sovrum_anslut
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.gosund_air_purifier
+              state: 'on'
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.air_purifier
+      - delay:
+          seconds: 4

@@ -1,0 +1,17 @@
+platform: template
+sensors:
+  ench_unavailable:
+    friendly_name: 'ench_unavailable'
+    unit_of_measurement: 'Entities'
+    value_template: "{{ state_attr('sensor.ench_entities', 'unavailable') | count}}"
+    icon_template: mdi:eye-off-outline
+  ench_battery:
+    friendly_name: 'ench_battery'
+    unit_of_measurement: 'Entities'
+    value_template: "{{ state_attr('sensor.ench_entities', 'battery') | count}}"
+    icon_template: mdi:battery-charging-outline
+  ench_stale:
+    friendly_name: 'ench_stale'
+    unit_of_measurement: 'Entities'
+    value_template: "{{ state_attr('sensor.ench_entities', 'stale') | count}}"
+    icon_template: mdi:sleep

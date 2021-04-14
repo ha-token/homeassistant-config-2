@@ -1,0 +1,263 @@
+
+automation:
+
+    ####################################################
+    #                                                  #
+    #                   AUTOMATIONS                    #
+    #                                                  #
+    ####################################################
+
+  - alias: homeassistant_start
+    initial_state: true
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: browser_mod.close_popup
+      - delay:
+          seconds: 1
+      - service: frontend.reload_themes
+      - delay:
+          seconds: 10
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: 
+                ['media_player.sony_bravia', 'media_player.samsung_tv_remote', 
+                'media_player.google_nest_mini']
+              state: 'off'
+          sequence:
+            - service: input_select.select_option
+              data:
+                entity_id: input_select.conditional_media
+                option: Zuletzt heruntergeladen
+      - delay:
+          seconds: 10
+      - service: fullykiosk.load_start_url
+        data:
+          entity_id: media_player.dashboard_media_player
+
+
+  - alias: lovelace_updated_ignore
+    mode: restart
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: lovelace_updated
+    action:
+      - service: browser_mod.toast
+        data:
+          duration: 1
+          message: ' '
+
+
+  - alias: clear_log_filesize
+    initial_state: true
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.home_assistant_log
+        above: 50
+    action:
+      - service: shell_command.clear_logs
+
+  - alias: hacs_version_grep
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.hacs
+    action:
+      - service: homeassistant.update_entity
+        entity_id: sensor.hacs_version
+
+  - alias: update_hass_release_notes
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: ['sensor.hass_version_latest', 'sensor.hass_version_latest_beta']
+    action:
+      - service: homeassistant.update_entity
+        entity_id:
+          ['sensor.hass_release_notes', 'sensor.hass_release_notes_rc']
+
+    ####################################################
+    #                                                  #
+    #                  SCAN INTERVAL                   #
+    #                                                  #
+    ####################################################
+
+  - alias: conditional_scan_interval
+    initial_state: true
+    trigger:
+      - platform: time_pattern
+        minutes: /5
+    condition:
+      - condition: state
+        entity_id: switch.computer_imac
+        state: 'on'
+    action:
+      - service: homeassistant.update_entity
+        entity_id:
+          ['sensor.imac_ip', 'sensor.imac_system_ssd', 'sensor.imac_macintosh_hd', 
+          'sensor.imac_time_machine', 'sensor.imac_mem', 'sensor.monitors_volume', 
+          'binary_sensor.monitors_mute_check', 'sensor.imac_uptime', 'sensor.imac_cpu']
+
+
+
+    ####################################################
+    #                                                  #
+    #                     LOADING                      #
+    #                                                  #
+    ####################################################
+
+  - alias: turn_off_loading_wheel
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id:
+          ['remote.eg_wohnzimmer_harmonyhub', 'media_player.samsung_tv_remote', 'switch.computer_imac', 
+          'switch.playstation_5', 'fan.sovrum_anslut', 'switch.air_purifier']
+    action:
+      - service: input_boolean.turn_off
+        data:
+          entity_id: >
+            {{ trigger.entity_id | replace(trigger.entity_id.split('.')[0], 'input_boolean') }}
+
+  - alias: turn_off_loading_wheel_failsafe
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id:
+          ['input_boolean.wohnzimmer_harmony', 'input_boolean.samsung_tv_remote', 'input_boolean.computer_imac', 
+          'input_boolean.playstation_5', 'input_boolean.sovrum_anslut', 'input_boolean.air_purifier']
+        to: 'on'
+        for:
+          minutes: 1
+    action:
+      - service: input_boolean.turn_off
+        data:
+          entity_id: >
+            {{ trigger.entity_id }}
+
+      ####################################################
+      #                                                  #
+      #                CONDITIONAL MEDIA                 #
+      #                                                  #
+      ####################################################
+
+  - alias: conditional_media_harmony
+    initial_state: true
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id:
+          ['switch.eg_wohnzimmer_harmonyhub_amazon_prime', 'switch.eg_wohnzimmer_harmonyhub_ambient', 'switch.eg_wohnzimmer_harmonyhub_fernsehen', 'switch.eg_wohnzimmer_harmonyhub_firetv', 'switch.eg_wohnzimmer_harmonyhub_smarttv']
+        to: 'on'
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.conditional_media
+          option: >
+            {{ trigger.to_state.name }}
+        
+  - alias: conditional_media_playing
+    initial_state: true
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id:
+          ['media_player.spotify_christoph_relxerd']
+        to: playing
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.conditional_media
+          option: >
+            {{ trigger.to_state.name }}
+
+  # - alias: conditional_media_paused_idle
+    # initial_state: true
+    # mode: restart
+    # trigger:
+      # - platform: state
+        # entity_id:
+          # ['media_player.wohnzimmer_firetv', 'media_player.wohnzimmer_tv', 
+          # 'media_player.spotify_christoph_relxerd']
+        # to:
+          # ['off', 'idle', 'standby']
+      # - platform: state
+        # entity_id:
+          # ['media_player.wohnzimmer_firetv', 'media_player.wohnzimmer_tv', 
+          # 'media_player.spotify_christoph_relxerd']
+        # to: paused
+        # for:
+          # minutes: 10
+    # action:
+      # - service: input_select.select_option
+        # data:
+          # entity_id: input_select.conditional_media
+          # option: >
+            # {% set media_players = 
+              # ['media_player.wohnzimmer_firetv', 'media_player.wohnzimmer_tv', 
+               # 'media_player.spotify_christoph_relxerd'] %}
+            # {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
+              # {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
+              # Zuletzt heruntergeladen
+              # {% else %}
+              # {{ media_players | selectattr('state','eq','paused') | map(attribute='name') | max }}
+              # {% endif %}
+            # {% else %}
+            # {{ media_players | selectattr('state','eq','playing') | map(attribute='name') | max }}
+            # {% endif %}
+
+  - alias: conditional_media_all_off
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: >
+          {{ is_state('switch.eg_wohnzimmer_harmonyhub_amazon_prime', 'off') and
+          is_state('media_player.spotify_christoph_relxerd', 'idle') and
+          is_state('switch.eg_wohnzimmer_harmonyhub_ambient', 'off') and
+          is_state('switch.eg_wohnzimmer_harmonyhub_fernsehen', 'off') and
+          is_state('switch.eg_wohnzimmer_harmonyhub_firetv', 'off') and
+          is_state('switch.eg_wohnzimmer_harmonyhub_smarttv', 'off') }}
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.conditional_media
+          option: Zuletzt heruntergeladen
+
+
+
+
+    ####################################################
+    #                                                  #
+    #                     UI SOUND                     #
+    #                                                  #
+    ####################################################
+
+  - alias: ui_sound_popup
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: browser_mod
+          service: popup
+    # condition:
+    #   - condition: state
+    #     entity_id: switch.fullykiosk_screensaver
+    #     state: 'off'
+    action:
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.dashboard_media_player
+          media_content_id: /local/sound/popup.m4a
+          media_content_type: music
+
+    ####################################################
+    #                                                  #
+    #                       TEST                       #
+    #                                                  #
+    ####################################################
+
+    # ...

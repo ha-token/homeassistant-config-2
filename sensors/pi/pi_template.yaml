@@ -1,0 +1,6 @@
+platform: template
+sensors:
+  network_throughput_out_eth0_template:
+    friendly_name: 'network_throughput_out_eth0_template'
+    unit_of_measurement: 'MB/s'
+    value_template: "{{ states('sensor.network_throughput_out_eth0') | float *-1 }}"

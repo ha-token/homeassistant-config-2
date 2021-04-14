@@ -1,0 +1,13 @@
+              action: fire-dom-event
+              browser_mod:
+                command: popup
+                title: Hof
+                style:
+                  .: |
+                    :host .content {
+                      height: 729px;
+                      width: 1280px;
+                    }
+                card:
+                  type: 'custom:webrtc-camera'
+                  url: !secret garten_kamera_hof_stream

@@ -1,0 +1,7 @@
+name: Spuelmaschinenstatus
+options:
+  - Idle
+  - Läuft
+  - Finishing
+  - Fertig
+initial: Idle

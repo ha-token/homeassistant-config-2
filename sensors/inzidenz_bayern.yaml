@@ -1,0 +1,5 @@
+platform: rest
+name: Inzidenz Bayern
+resource: "https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/Coronaf%C3%A4lle_in_den_Bundesl%C3%A4ndern/FeatureServer/0/query?where=LAN_ew_GEN%20%3D%20%27BAYERN%27&outFields=LAN_ew_AGS,LAN_ew_GEN,cases7_bl_per_100k&outSR=4326&f=json"
+value_template: '{{ value_json.features[0].attributes.cases7_bl_per_100k | round(1) }}'
+scan_interval: 3600

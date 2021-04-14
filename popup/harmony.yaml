@@ -1,0 +1,59 @@
+              action: fire-dom-event
+              browser_mod:
+                command: popup
+                title: Harmony
+                card:
+                  type: entities
+                  state_color: true
+                  show_header_toggle: false
+                  entities:
+
+                    - entity: switch.wohnzimmer_tv
+                      name: TV
+                      secondary_info: last-changed
+
+                    - entity: input_select.conditional_media
+
+                    - type: custom:hui-element
+                      card_type: horizontal-stack
+                      card_mod:
+                        style: |
+                          #root {
+                            justify-content: space-evenly;
+                            margin: 1.4em -0.7em 0.7em 0;
+                          }
+                      cards:
+
+                      - type: custom:button-card
+                        icon: mdi:volume-mute
+                        show_name: false
+                        tap_action:
+                          action: call-service
+                          service: remote.send_command
+                          service_data:
+                            entity_id: remote.eg_wohnzimmer_harmonyhub
+                            command: Mute
+                            device: AV-Receiver Wohnzimmer
+                        template: icon_only
+
+                      - type: custom:button-card
+                        icon: mdi:volume-minus
+                        tap_action:
+                          action: call-service
+                          service: remote.send_command
+                          service_data:
+                            entity_id: remote.eg_wohnzimmer_harmonyhub
+                            command: VolumeDown
+                            device: AV-Receiver Wohnzimmer
+                        template: icon_only
+
+                      - type: custom:button-card
+                        icon: mdi:volume-plus
+                        tap_action:
+                          action: call-service
+                          service: remote.send_command
+                          service_data:
+                            entity_id: remote.eg_wohnzimmer_harmonyhub
+                            command: VolumeUp
+                            device: AV-Receiver Wohnzimmer
+                        template: icon_only
