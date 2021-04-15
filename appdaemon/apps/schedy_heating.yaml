@@ -29,7 +29,6 @@ schedy_heating:  # This is our app instance name.
           # aktiviere Plan in den Ferien und nur wenn jemand Zuhause ist
           - x: "Next() if is_on('group.ferien_und_feiertage')and is_off('input_boolean.absent_long') else Break()"
           - { start: "06:00", end: "23:00" }
-          - v: 18
         # Regelung Wochenende---------------------------------------------------
         - weekdays: 6-7
           rules:
@@ -39,7 +38,7 @@ schedy_heating:  # This is our app instance name.
         # Regelung Wochentage---------------------------------------------------
         - weekdays: 1-4
           rules:
-          - { start: "13:00", end: "22:00" }
+          - { start: "12:00", end: "22:00" }
         - weekdays: 5
           rules:
           - { start: "11:30", end: "23:00" }
@@ -70,6 +69,10 @@ schedy_heating:  # This is our app instance name.
             rules:
             - x: "Next() if is_off('input_boolean.absent_long') else Break()"
             - { start: "10:00", end: "20:00" }
+          # aktiviere Plan solange jemand zuhause ist von Montag bis Freitag
+          - weekdays: 1-5
+            - x: "Next() if is_on('group.haus') else Break()"
+            - { start: "07:00", end: "18:00" }
           - weekdays: 1-5
             rules:
             - { start: "13:00", end: "20:00" }
