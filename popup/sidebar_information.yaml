@@ -90,7 +90,7 @@
                               services: |
                                 [[[
                                   hass.callService('browser_mod', 'toast', {
-                                    message: 'Startar om Home Assistant...'
+                                    message: 'Stare HomeAssistant neu...'
                                   });
                                   hass.callService('homeassistant', 'restart');
                                 ]]]
@@ -195,10 +195,10 @@
                               services: |
                                 [[[
                                   hass.callService('browser_mod', 'toast', {
-                                    message: 'Laddar om startsidan...'
+                                    message: 'Lade Dashboard neu...'
                                   });
                                   hass.callService('fullykiosk', 'load_start_url', {
-                                    entity_id: 'media_player.galaxy_tab_a_media_player'
+                                    entity_id: 'media_player.dashboard_fullykiosk'
                                   });
                                 ]]]
                             template: icon_name
@@ -210,10 +210,10 @@
                               services: |
                                 [[[
                                   hass.callService('browser_mod', 'toast', {
-                                    message: 'Startar om Fully Kiosk Browser...'
+                                    message: 'Stae Fully Kiosk Browser neu...'
                                   });
                                   hass.callService('fullykiosk', 'restart', {
-                                    entity_id: 'media_player.galaxy_tab_a_media_player'
+                                    entity_id: 'media_player.dashboard_fullykiosk'
                                   });
                                 ]]]
                             template: icon_name
