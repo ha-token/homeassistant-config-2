@@ -176,15 +176,7 @@ views:
             style:
               top: 87.41%
               left: 4.8%
-            tap_action: !include popup/sidebar_batterie.yaml
-            card_mod:
-              style: |
-                :host {
-                  {% if states('sensor.ench_battery') != '0' %}
-                    color: rgb(35,78,106) !important; 
-                    opacity: 1 !important;
-                  {% endif %}
-                  }            
+            tap_action: !include popup/sidebar_batterie.yaml         
 
           #################################################
           #                                               #
