@@ -199,7 +199,7 @@ views:
               top: 87.41%
               left: 10.7%
             tap_action: !include popup/sidebar_information.yaml
-
+ 
           #################################################
           #                                               #
           #                UPDATES BUTTON                 #
@@ -279,7 +279,7 @@ views:
           #                   HARMONY                     #
           #                                               #
           #################################################
-    
+
           - type: custom:button-card
             entity: remote.eg_wohnzimmer_harmonyhub
             name: Harmony
@@ -459,7 +459,7 @@ views:
               width: 10%
             tap_action:
               action: more-info
-            hold_action: !include popup/studio_monitorer.yaml
+            # hold_action: !include popup/studio_monitorer.yaml
             custom_fields:
               icon_monitors: >
                 [[[ if (entity.state === 'playing') {
@@ -500,7 +500,7 @@ views:
               width: 10%
             tap_action:
               action: more-info
-            hold_action: !include popup/studio_monitorer.yaml
+            # hold_action: !include popup/studio_monitorer.yaml
             custom_fields:
               icon_monitors: >
                 [[[ if (entity.state === 'playing') {
@@ -977,6 +977,7 @@ views:
 
           - type: custom:button-card
             entity: cover.garage_tor
+            name: Garage
             style:
               top: 64.5%
               left: 66.14%
@@ -1211,6 +1212,7 @@ views:
 
           - type: custom:button-card
             entity: switch.garage_licht
+            name: Licht
             style:
               top: 82.1%
               left: 66.14%
@@ -1266,8 +1268,8 @@ views:
               top: 64.5%
               left: 91.05%
               width: 10%
-            tap_action: !include popup/hemma_sanja.yaml
-            hold_action: !include popup/hemma_sanja.yaml
+            tap_action: !include popup/franziska.yaml
+            hold_action: !include popup/franziska.yaml
             template: person
 
           #################################################

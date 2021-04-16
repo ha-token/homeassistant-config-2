@@ -6,36 +6,30 @@
                 style:
                   .: |
                     :host .content {
-                      width: auto;
+                      width: 60em;
                     }
                   $: |
                     .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
                       background: none;
                     }
                 card:
-                  type: custom:mod-card
-                  card_mod:
-                    style:
-                      ha-card>hui-grid-card$: |
-                        #root {
-                          grid-template-columns: 400px 555px !important;
-                        }
-                  card:
-                    type: grid
-                    columns: 1
-                    square: false
-                    cards:
-                      - collapse: 10
-                        color_gradient:
-                          - '#ff0000'
-                          - '#ffff00'
-                          - '#00ff00'
-                        filter:
-                          include: # filters for auto-adding
-                            - name: entity_id # entities which id ends with "_battery_level"
-                              value: "*_batterie"
-                            - name: attributes.device_class # and entities which device_class attribute equals "battery"
-                              value: battery
-                        sort_by_level: asc
-                        title: Batteriestände
-                        type: 'custom:battery-state-card'
+                  type: grid
+                  columns: 1
+                  cards:
+                    - type: 'custom:battery-state-card'
+                      card_mod:
+                        class: add-header
+                      collapse: 10
+                      color_gradient:
+                        - '#ff0000'
+                        - '#ffff00'
+                        - '#00ff00'
+                      filter:
+                        include: # filters for auto-adding
+                          - name: entity_id # entities which id ends with "_battery_level"
+                            value: "*_batterie"
+                          - name: attributes.device_class # and entities which device_class attribute equals "battery"
+                            value: battery
+                      sort_by_level: asc
+                      title: Batteriestände
+                      
