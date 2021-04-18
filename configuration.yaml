@@ -86,7 +86,7 @@ logbook:
       - automation
       - binary_sensor
 recorder:
-  #recorde nur die letzten 28 Tage
+  #recorde nur die letzten 5 Tage
   purge_keep_days: 28
   #db url
   # db_url: !secret ha_recorder_dburl

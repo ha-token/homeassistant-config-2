@@ -13,7 +13,7 @@
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.kinomodus
-      - service: script.alexa_actionable
+      - service: script.kinomodus
         data_template:
           text: 'Was möchtest du sehen?'
           event_id: 'alexa_actionable_notification'
