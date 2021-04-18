@@ -89,7 +89,7 @@
     trigger:
     - platform: state
       entity_id: binary_sensor.waschkueche_trockner_tuere_kontakt
-      to: "off"
+      to: "on"
     condition:
     - condition: state
       entity_id: input_select.trocknerstatus
