@@ -21,7 +21,17 @@
           actions:
             - title: "Garage schließen" # The button title
               action: "garage_close" # The key you are sending for the event
-
+    - service: script.alexa_actionable
+      data_template:
+        text: 'Die Garage ist seit mehr als 5 Minuten offen, soll ich sie schließen?'
+        event_id: 'alexa_actionable_notification'
+        alexa_device: 'media_player.esszimmer_alexa'
+    - service: script.alexa_actionable
+      data_template:
+        text: 'Die Garage ist seit mehr als 5 Minuten offen, soll ich sie schließen?'
+        event_id: 'alexa_actionable_notification'
+        alexa_device: 'media_player.bad_alexa'
+       
  ## Garage geschlossen ## ------------------------------------------------------
   - alias: 'garage_geschlossen'
     id: garage_geschlossen
@@ -48,6 +58,11 @@
       event_type: mobile_app_notification_action
       event_data:
         action: 'garage_close'
+    - platform: event
+      event_type: alexa_actionable_notification
+      event_data:
+        event_id: 'alexa_actionable_notification'
+        event_response_type: ResponseYes
     
     action:
     - service: cover.close_cover
