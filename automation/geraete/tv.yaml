@@ -15,11 +15,12 @@
       - platform: state
         entity_id: remote.eg_wohnzimmer_harmonyhub
         to: "on"
+    # nicht, wenn Spotify auf der Gruppe Überall läuft
     condition:
       condition: not
       conditions:
         - condition: template
-          value_template: "{{ is_state_attr('media_player.wohnzimmer_firetv', 'source', 'Spotify') }}"
+          value_template: "{{ is_state_attr('media_player.spotify_christoph_relxerd', 'source', 'Überall') }}"
     action:
       - service: media_player.turn_off
         entity_id: media_player.wohnzimmer_alexa
