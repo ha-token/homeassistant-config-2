@@ -38,22 +38,9 @@
     - condition: state
       entity_id: input_select.trocknerstatus
       state: Fertig
-    - condition: time
-      after: "07:00:00"
-      before: "23:00:00"
     action:
     - service: timer.start
       entity_id: timer.trockner_fertig
-    - service: notify.alexa_media_esszimmer_alexa
-      data:
-        message: Der Trockner ist fertig
-        data:
-          type: announce
-    - service: notify.alexa_media_bad_alexa
-      data:
-        message: Der Trockner ist fertig
-        data:
-          type: announce
     - service: notify.mobile_app_christoph_handy
       data: 
         message: Der Trockner ist fertig
@@ -67,6 +54,21 @@
         data:
           color: indigo
           fontsize: large
+    - condition: time
+      after: "07:00:00"
+      before: "23:00:00"
+    - service: notify.alexa_media_esszimmer_alexa
+      data:
+        message: Der Trockner ist fertig
+        data:
+          type: announce
+    - service: notify.alexa_media_bad_alexa
+      data:
+        message: Der Trockner ist fertig
+        data:
+          type: announce
+
+
 
  ## Trockner läuft ##
   - alias: trockner_laeuft

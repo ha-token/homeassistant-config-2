@@ -38,12 +38,26 @@
     - condition: state
       entity_id: input_select.waschmaschinenstatus
       state: Fertig
-    - condition: time
-      after: "07:00:00"
-      before: "23:00:00"
     action:
     - service: timer.start
       entity_id: timer.waschmaschine_fertig
+    - service: notify.mobile_app_christoph_handy
+      data: 
+        message: Die Waschmaschine ist fertig
+        title: Waschmaschine
+        data:
+          persistent: true
+          tag: waschmaschine_fertig
+    - service: notify.wohnzimmer_firetv
+      data:
+        title: HomeAssistant
+        message: Die Waschmaschine ist fertig
+        data:
+          color: indigo
+          fontsize: large
+    - condition: time
+      after: "07:00:00"
+      before: "23:00:00"
     - service: notify.alexa_media_esszimmer_alexa
       data:
         message: Die Waschmaschine ist fertig
@@ -54,20 +68,8 @@
         message: Die Waschmaschine ist fertig
         data:
           type: announce
-    - service: notify.wohnzimmer_firetv
-      data:
-        title: HomeAssistant
-        message: Die Waschmaschine ist fertig
-        data:
-          color: indigo
-          fontsize: large
-    - service: notify.mobile_app_christoph_handy
-      data: 
-        message: Die Waschmaschine ist fertig
-        title: Waschmaschine
-        data:
-          persistent: true
-          tag: waschmaschine_fertig
+
+
 
  ## Waschmaschine in Betrieb ## 
   - alias: waschmaschine_laeuft
