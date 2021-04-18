@@ -30,7 +30,7 @@
                           entities:
 
                             - entity: device_tracker.christoph_handy
-                              name: Router
+                              name: Devicetracker
                               icon: mdi:wifi
                               card_mod: &style
                                 style: |
@@ -49,11 +49,11 @@
                           cards:
 
                           - type: custom:button-card
-                            name: Spela upp ljud på iPhone X
+                            name: Wo ist das Handy?
                             icon: mdi:volume-high
                             tap_action:
                               action: call-service
-                              service: script.mattias_find_my_iphone
+                              service: script.christoph_handy_suchen
                             template: icon_name
 
                     - type: custom:hui-element

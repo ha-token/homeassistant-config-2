@@ -54,39 +54,19 @@ script:
             ['exit_15', 'settings_1', 'down_2', 'down_2' , 'down_2', 'enter_5', 'down_2', 'down_2', 'down_2', 
             'down_2', 'enter_5', 'enter_5', 'down_2', 'down_2', 'enter_5', 'exit_15', 'exit_15']
 
-  mattias_find_my_iphone:
+  christoph_handy_suchen:
     sequence:
       - repeat:
           count: 3
           sequence:
-            - service: notify.mobile_app_iphone
+            - service: notify.mobile_app_christoph_handy
               data:
-                title: Hitta min iPhone
-                message: Här är jag
+                title: Finde mein Handy
+                message: Hier bin ich
                 data:
-                  push:
-                    sound:
-                      name: Ringtone_UK_Haptic.caf
-                      critical: 1
-                      volume: 1.0
-            - delay:
-                seconds: 4
-
-  sanja_find_my_iphone:
-    sequence:
-      - repeat:
-          count: 3
-          sequence:
-            - service: notify.mobile_app_sanja_iphone
-              data:
-                title: Hitta min iPhone
-                message: Här är jag
-                data:
-                  push:
-                    sound:
-                      name: Ringtone_UK_Haptic.caf
-                      critical: 1
-                      volume: 1.0
+                  ttl: 0
+                  importance: high
+                  channel: alarm_stream
             - delay:
                 seconds: 4
 
