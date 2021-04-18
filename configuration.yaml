@@ -22,6 +22,7 @@ lovelace:
       {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,         type: module},
       {url: /hacsfiles/swipe-card/swipe-card.js,                              type: module},
       {url: /hacsfiles/transmission-card/transmission-card.js,                type: module},
+      {url: /hacsfiles/sidebar-card/sidebar-card.js,                          type: module},
 
       {url: '/local/calendar-card.js?v=31091',                                type: module},
       # {url: '/local/stack-in-card.js?v=101',                                  type: module},

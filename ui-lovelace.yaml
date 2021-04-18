@@ -10,6 +10,22 @@ title: Laemmersteig
 kiosk_mode:
   hide_header: true
   hide_sidebar: true
+# sidebar:
+  # title: "Sidebartest"
+  # digitalClock: true
+  # date: true
+  # showTopMenuOnMobile: true
+  # style: |
+    # :host {
+        # --sidebar-background: #000;
+        # --sidebar-text-color: #FFF;
+        # }
+  # sidebarMenu:
+    # - action: navigate 
+      # navigation_path: /config/areas/dashboard
+      # name: Bereiche
+      # icon: mdi:map-marker
+
 views:
   - panel: true
     theme: tablet
@@ -76,6 +92,16 @@ views:
                   #brokenImage {
                     opacity: 0 !important;
                   }
+          - type: image
+            image: local/ui/sidebar/rooms_off.png
+            style:
+              border-radius: 5vw
+              left: 11.7%
+              top: 60%
+              width: 20.5078125%
+            tap_action:
+              action: navigate
+              navigation_path: /config/areas/dashboard
           #################################################
           #                                               #
           #                   MARKDOWN                    #
