@@ -117,12 +117,6 @@ notify:
     name: wohnzimmer_firetv
     host: 192.168.178.17
 
-#Xiaomi Luftbefeuchter----------------------------------------------------------
-fan:
-  - platform: xiaomi_miio
-    host: 192.168.178.146
-    token: !secret xiaomi_luftbefeuchter_token
-    name: Luftbefeuchter
 
 #Google Kalender----------------------------------------------------------------
 google:
