@@ -60,6 +60,8 @@
                trigger.from_state.state == 'on' and
                trigger.to_state is not none and
                trigger.to_state.state == 'on' }}
+        - condition: template
+          value_template: "{{ ( as_timestamp(now()) - as_timestamp(state_attr('automation.wohnzimmer_licht_ein', 'last_triggered')) |int(0) ) > 10 }}"
     action:
     - service: light.turn_on
       entity_id: light.wohnzimmer_licht_tv
