@@ -39,10 +39,11 @@ views:
                top: 93.65%
                left: 70.8%
             content: >
-              <b>Inzidenzen</b>
-              <b>Bayern: <font color='#e89210'>{{ states('sensor.inzidenz_bayern')| round(0) }}</b></font>
-              <b>Memmingen: <font color='#e89210'>{{ states('sensor.inzidenz_memmingen')| round(0) }}</b></font>
-              <b>Unterallgäu: <font color='#e89210'>{{ states('sensor.inzidenz_unterallgau')| round(0) }}</b></font>
+              {% set break = '‍ ‍ ‍ ‍ ‍ ‍<font color="#2f3436"></font> ‍ ‍ ‍ ‍ ' %}
+              <font color='#6a7377'><ha-icon icon="mdi:virus"></ha-icon></font>
+              <b><font color='#6a7377'>Bayern: </font><font color='#e89210'>{{ states('sensor.inzidenz_bayern')| round(0) }}</b></font>{{ break -}}
+              <b><font color='#6a7377'>Memmingen: </font><font color='#e89210'>{{ states('sensor.inzidenz_memmingen')| round(0) }}</b></font>{{ break -}}
+              <b><font color='#6a7377'>Unterallgäu: </font><font color='#e89210'>{{ states('sensor.inzidenz_unterallgau')| round(0) }}</b></font>{{ break -}}
             card_mod:
               class: markdown-covid19
               style:
@@ -155,14 +156,6 @@ views:
               
               <font color='#6a7377'><b>Außentemperatur</b><br> 
               <b>{{ state_attr('weather.home', 'temperature') }}°</b><br></font><br><br>
-              
-              <b>Inzidenzen</b><br>
-              <b>Bayern: <font color='#e89210'>{{ states('sensor.inzidenz_bayern')| round(0) }}</b></font><br>
-              <b>Memmingen: <font color='#e89210'>{{ states('sensor.inzidenz_memmingen')| round(0) }}</b></font><br>
-              <b>Unterallgäu: <font color='#e89210'>{{ states('sensor.inzidenz_unterallgau')| round(0) }}</b></font><br>
-              
-              
-
 
 
           #################################################
