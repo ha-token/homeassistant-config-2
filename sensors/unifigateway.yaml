@@ -1,4 +1,4 @@
 platform: unifigateway
-host: 192.168.178.2
+host: !secret unifigateway_host
 username: !secret unifigateway_user
 password: !secret unifigateway_password
