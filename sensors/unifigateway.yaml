@@ -1,4 +1,4 @@
 platform: unifigateway
 host: 192.168.178.2
-username: laemmersteig
-password: 456DiclO789
+username: !secret unifi_user
+password: !secret unifi_password
